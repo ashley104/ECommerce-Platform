@@ -1,5 +1,6 @@
 import { test as setup } from "@playwright/test";
 import fs from "fs";
+import path from "path";
 
 ////////////////////////////////////////
 // Authentication for Assignment 2
@@ -25,6 +26,7 @@ setup(
         },
       ],
     };
+    fs.mkdirSync(path.dirname(authFile), { recursive: true });
     fs.writeFileSync(authFile, JSON.stringify(content, null, 2));
   },
 );
