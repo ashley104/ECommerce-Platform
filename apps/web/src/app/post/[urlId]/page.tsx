@@ -45,7 +45,7 @@ export default async function Page({
         />
         <hr className="border-gray-300 pb-3" />
         <div className="flex gap-x-200">
-          <p className="text-gray-500">{post.views} views</p>
+          <p className="text-gray-500">{post.views + 1} views</p>
           <p className="text-gray-500">{post.likes} likes</p>
         </div>
       </article>
