@@ -3,19 +3,19 @@
 export function categories<T>(
   posts: { category: string; active: boolean }[],
 ): { name: string; count: number }[] {
-  return posts
-    .filter((p) => p.active)
-    .sort((a, b) => a.category.localeCompare(b.category))
-    .reduce(
-      (acc, post) => {
-        const category = acc.find((c) => c.name === post.category);
-        if (category) {
-          category.count++;
-        } else {
-          acc.push({ name: post.category, count: 1 });
-        }
-        return acc;
-      },
-      [] as { name: string; count: number }[],
-    );
+  return posts.filter((post) => post.active)
+    .reduce((acc, post) => { // Loop through active posts
+      const existing = acc.find((item) => item.name === post.category);
+      // If category already exists, increment count
+      if (existing) {
+        existing.count += 1; 
+      }
+      // If category does not exist, add it to the accumulator with count 1
+      else {
+        acc.push({ name: post.category, count: 1 });
+      }
+      return acc;
+      //initialise accumulator as an array of objects with name and count
+    }, [] as { name: string; count: number }[])
+    .sort((a, b) => a.name.localeCompare(b.name)); //sort A-Z
 }

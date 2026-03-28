@@ -9,23 +9,18 @@ export default async function Page({
 }: {
   params: Promise<{ name: string }>;
 }) {
-  //take category name from url params
   const { name } = await params;
   const filteredPosts = posts.filter((post) => {
-    const category = toUrlPath(post.category);
-    return category === name;
+    const tags = post.tags.split(",").map((t) => toUrlPath(t.trim()));
+
+    if (tags.includes(name)) {
+      return true;
+    }
+    return false;
   });
 
-  if (filteredPosts.length === 0) {
-    return (
-      <AppLayout>
-        <div>0 Posts</div>
-      </AppLayout>
-    );
-  }
-
   return (
-    <AppLayout>
+    <AppLayout selectedTag={name}>
       <Main posts={filteredPosts} className={styles.main} />
     </AppLayout>
   );

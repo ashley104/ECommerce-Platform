@@ -46,7 +46,7 @@ export const posts: Post[] = [
     date: new Date("Apr 18, 2022"),
     category: "Node",
     tags: "Back-End,Databases",
-    views: 320,
+    views: 321,
     likes: 3,
     active: true,
   },

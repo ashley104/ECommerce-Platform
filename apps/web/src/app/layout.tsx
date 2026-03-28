@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { cookies } from "next/headers";
+import { ThemeProvider } from "@/components/Themes/ThemeContext";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -27,9 +28,11 @@ export default async function RootLayout({
   const theme = serverCookies.get("theme")?.value || "light";
 
   return (
-    <html lang="en" data-theme={theme}>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+    <html lang="en" data-theme={theme} suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+        <ThemeProvider initialTheme={theme === "dark" ? "dark" : "light"}>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

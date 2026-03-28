@@ -1,36 +1,66 @@
 "use client";
 
+import Form from "next/form";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
 import ThemeSwitch from "../Themes/ThemeSwitcher";
 
-function debounce<T extends (...args: Any[]) => Any>(fn: T, delay = 300) {
-  let timeoutId: Any;
-  return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => fn.apply(this, args), delay);
-  };
-}
+const SEARCH_DELAY_MS = 300;
 
 export function TopMenu({ query }: { query?: string }) {
   const router = useRouter();
+  // Store the active debounce timer so we can replace it on each keystroke.
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleSearch = debounce(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const search = event.target.value;
-      router.push(`/search?q=${search}`);
-    },
-  );
+  // Clear any pending navigation when the component unmounts.
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
-  // TODO: create and hook the search input to the handleSearch function
-  //       make sure you are able to explain what the handleSearch is doing and what debounce does
+  function handleSearchChange(
+    input: HTMLInputElement,
+    form: HTMLFormElement | null,
+  ) {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    // Wait briefly before searching so we do not navigate on every keystroke.
+    timeoutRef.current = setTimeout(() => {
+      const trimmedSearch = input.value.trim();
+
+      // Empty search returns to the home page instead of opening /search?q=.
+      if (!trimmedSearch) {
+        router.push("/");
+        return;
+      }
+
+      form?.requestSubmit();
+    }, SEARCH_DELAY_MS);
+  }
 
   return (
-    <div>
-      <form action="#" method="GET" className="grid flex-1 grid-cols-1">
-        <input />
-      </form>
-      <div className="flex items-center gap-x-6">
-        <ThemeSwitch />
+    <div className="sticky top-0 self-start border-b border-gray-200 bg-white">
+      <div className="py-3 px-9 flex items-center gap-x-3">
+        <Form action="/search" className="flex-1 min-w-0">
+          <input
+            type="text"
+            name="q"
+            placeholder="Search"
+            className="w-full py-2 pl-5 pr-5 text-sm placeholder-gray-500 bg-white border border-gray-200 rounded-full"
+            defaultValue={query ?? ""}
+            onChange={(event) => {
+              handleSearchChange(event.currentTarget, event.currentTarget.form);
+            }}
+          />
+        </Form>
+        <div className="flex shrink-0 items-center gap-x-6">
+          <ThemeSwitch />
+        </div>
       </div>
     </div>
   );
