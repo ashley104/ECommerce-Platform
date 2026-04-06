@@ -30,11 +30,13 @@ export default function PostCard({ post }: { post: Post }) {
     <article className="overflow-hidden hover:shadow-lg transition-shadow bg-white rounded-xl mb-4 max-w-sm">
       <img className="w-full h-48 object-cover" src={post.imageUrl} alt={post.title} />
       <div className="p-9 gap-2">
-        <h3 
-          className="text-lg mb-2 cursor-pointer hover:underline font-bold"
-          style={{ color: "#1A5134" }}>
-          <Link href={`/post/${post.urlId}`}>{post.title}</Link>
-        </h3>
+        <Link href={`/post/${post.urlId}`}>
+          <h3 
+            className="text-lg mb-2 cursor-pointer hover:underline font-bold"
+            style={{ color: "#1A5134" }}>
+            {post.title}
+          </h3>
+        </Link>
         <p className="text-gray-500 text-sm">{post.description}</p>
         <div className="flex mt-3 mb-2">
           <p className="text-sm">Category: </p>

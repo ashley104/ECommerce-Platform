@@ -14,6 +14,7 @@ export default function SignIn() {
           </label>
           <input
             className="w-full rounded-md px-3 py-2 bg-gray-100 focus:outline-none focus:ring-2 focus-visible:ring-[#1A5134] mb-4"
+            id="password"
             type="password"
             name="password"
             placeholder="Enter password"

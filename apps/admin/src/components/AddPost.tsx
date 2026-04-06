@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useActionState } from "react";
+import { useEffect, useRef, useState, useActionState } from "react";
 import { savePost } from "../app/actions/postAction";
 import { marked } from "marked";
 import { validatePost } from "../utils/post";
@@ -24,7 +24,17 @@ export default function AddPost() {
 
   const [preview, setPreview] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [cursor, setCursor] = useState(0);
+  const cursorRef = useRef(0);
+  const previousPreviewRef = useRef(preview);
+
+  useEffect(() => {
+    if (previousPreviewRef.current && !preview && textareaRef.current) {
+      textareaRef.current.focus();
+      textareaRef.current.setSelectionRange(cursorRef.current, cursorRef.current);
+    }
+
+    previousPreviewRef.current = preview;
+  }, [preview]);
 
   function handleChange(e: any) {
     const { name, value } = e.target;
@@ -56,9 +66,10 @@ export default function AddPost() {
             
             {/* TITLE */}
             <div className="flex flex-col gap-1">
-              <label className="font-semibold text-sm">Title</label>
+              <label className="font-semibold text-sm" htmlFor="title">Title</label>
               <input 
                 className="bg-gray-100 rounded-xl px-2 py-2 focus:outline focus:ring-5 focus:ring-gray-200"
+                id="title"
                 name="title" value={fields.title} onChange={handleChange} 
               />
               <p className="text-red-500 text-sm">{errors.title}</p>
@@ -66,12 +77,12 @@ export default function AddPost() {
 
             {/* DESCRIPTION */}
             <div className="flex flex-col gap-1">
-              <label className="font-semibold text-sm">Description ({fields.description.length}/200 characters)</label>
+              <label className="font-semibold text-sm" htmlFor="description">Description ({fields.description.length}/200 characters)</label>
               <textarea
+                id="description"
                 name="description"
                 value={fields.description}
                 onChange={handleChange}
-                maxLength={200}
                 rows={4}
                 className="bg-gray-100 rounded-xl px-2 py-2 focus:outline focus:ring-5 focus:ring-gray-200"
               />
@@ -81,18 +92,19 @@ export default function AddPost() {
             {/* CONTENT + PREVIEW */}
             <div className="flex flex-col gap-1">
               <div className="flex items-center justify-between">
-                <label className="font-semibold text-sm">Content (Markdown)</label>
+                <label className="font-semibold text-sm" htmlFor="content">Content (Markdown)</label>
                 <button
                   type="button"
+                  data-testid="preview-button"
                   style={{ borderColor: "#1A5134", color: "#1A5134" }}
                   className="border rounded-lg px-3 py-1 text-sm font-semibold"
-                  onClick={() => {
-                    if (preview && textareaRef.current) {
-                      setTimeout(() => {
-                        textareaRef.current?.focus();
-                        textareaRef.current?.setSelectionRange(cursor, cursor);
-                      }, 0);
+                  onPointerDownCapture={() => {
+                    if (!preview && textareaRef.current) {
+                      cursorRef.current = textareaRef.current.selectionStart ?? 0;
                     }
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
                     setPreview(!preview);
                   }}
                 >
@@ -101,6 +113,7 @@ export default function AddPost() {
               </div>
                 {!preview ? (
                   <textarea
+                    id="content"
                     name="content"
                     ref={textareaRef}
                     value={fields.content}
@@ -108,13 +121,13 @@ export default function AddPost() {
                     rows={15}
                     className="bg-gray-100 rounded-xl px-2 py-2 focus:outline focus:ring-5 focus:ring-gray-200"
                     onSelect={(e) =>
-                      setCursor(e.currentTarget.selectionStart)
+                      (cursorRef.current = e.currentTarget.selectionStart)
                     }
                   />
                 ) : (
                   <div 
                     className="border p-3 rounded" 
-                    data-testid="content-preview" 
+                    data-test-id="content-preview" 
                     dangerouslySetInnerHTML={{ __html: renderedContent }}
                   />
                 )}
@@ -124,9 +137,10 @@ export default function AddPost() {
 
             {/* IMAGE */}
             <div className="flex flex-col gap-1">
-              <label className="font-semibold text-sm">Image URL</label>
+              <label className="font-semibold text-sm" htmlFor="image">Image URL</label>
               <input
                 className="bg-gray-100 rounded-xl px-2 py-2 focus:outline focus:ring-5 focus:ring-gray-200"
+                id="image"
                 name="image"
                 value={fields.image}
                 onChange={handleChange}
@@ -136,13 +150,14 @@ export default function AddPost() {
 
             {/* IMAGE PREVIEW */}
             {fields.image && (
-              <img data-testid="image-preview" src={fields.image} />
+              <img data-test-id="image-preview" src={fields.image} />
             )}
 
             {/* TAGS */}
             <div className="flex flex-col gap-1">
-              <label className="font-semibold text-sm">Tags (separated by commas)</label>
+              <label className="font-semibold text-sm" htmlFor="tags">Tags (separated by commas)</label>
               <input 
+                id="tags"
                 name="tags" 
                 value={fields.tags} 
                 onChange={handleChange} 
@@ -156,7 +171,7 @@ export default function AddPost() {
               <p className="text-red-500 text-sm">Please fix the errors before saving</p>
             )}
             {serverState?.success && (
-              <p className="text-green-500 text-sm">Post saved successfully!</p>
+              <p className="text-green-500 text-sm">Post updated successfully</p>
             )}
 
             <div className="flex justify-end gap-2 pt-4">

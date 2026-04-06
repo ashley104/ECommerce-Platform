@@ -19,6 +19,7 @@ export default function PostFilters({
             <label className="font-semibold text-sm" htmlFor="query">Filter by Content:</label>
             <input
               className="rounded-md px-3 py-2 bg-gray-100 text-sm focus:outline focus:ring-3 focus:ring-gray-300"
+              id="query"
               placeholder="Search title or content..."
               value={filters.query}
               onChange={(e) =>
@@ -31,6 +32,7 @@ export default function PostFilters({
             <label className="font-semibold text-sm" htmlFor="tags">Filter by Tag:</label>
             <input
               className="rounded-md px-3 py-2 bg-gray-100 text-sm focus:outline focus:ring-3 focus:ring-gray-300"
+              id="tags"
               placeholder="Tags"
               value={filters.tags}
               onChange={(e) =>
@@ -44,6 +46,7 @@ export default function PostFilters({
             <input
               type="date"
               className="rounded-md px-3 py-2 bg-gray-100 text-sm focus:outline focus:ring-3 focus:ring-gray-300"
+              id="date"
               value={filters.date}
               onChange={(e) =>
                 setFilters((prev: any) => ({ ...prev, date: e.target.value }))
@@ -73,16 +76,16 @@ export default function PostFilters({
           <select
             className="rounded-md px-3 py-2 bg-gray-100 text-sm font-semibold"
             id="sort"
-            value={sort.field + "_" + sort.order}
+            value={sort.field + "-" + sort.order}
             onChange={(e) => {
-              const [field, order] = e.target.value.split("_");
+              const [field, order] = e.target.value.split("-");
               setSort({ field, order });
             }}
           >
-            <option value="title_asc">Title Asc</option>
-            <option value="title_desc">Title Desc</option>
-            <option value="date_asc">Date Asc</option>
-            <option value="date_desc">Date Desc</option>
+            <option value="title-asc">Title Asc</option>
+            <option value="title-desc">Title Desc</option>
+            <option value="date-asc">Date Asc</option>
+            <option value="date-desc">Date Desc</option>
           </select>
         </div>
       </form>
