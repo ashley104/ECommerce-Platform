@@ -28,7 +28,7 @@ export async function login(password: string) {
 
   userCookies.set("auth_token", "valid", {
     httpOnly: true, //stops JavaScript from accessing the cookie
-    path: "/",
+    path: "/", //cookie is sent for all routes
   });
 
   return true;

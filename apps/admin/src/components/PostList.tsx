@@ -18,7 +18,7 @@ export default function PostList() {
       //if no query, show all posts. otherwise, only show posts that contain the query in title or content
       return !filters.query || searchableContent.includes(filters.query.toLowerCase());
     })
-    .filter((p) => !filters.tags || p.tags.includes(filters.tags))
+    .filter((p) => !filters.tags || p.tags.toLowerCase().includes(filters.tags.toLowerCase()))
     .filter((p) => {
       const input = Date.parse(filters.date);
       return !filters.date || p.date.getTime() >= input;
