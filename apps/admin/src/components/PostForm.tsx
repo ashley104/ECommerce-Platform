@@ -27,6 +27,8 @@ export default function PostForm({
   headerAction,
   backgroundColor,
 }: PostFormProps) {
+  //useActionState: custom hook manages state of an action
+  //It takes an action function and an initial state
   const [serverState, formAction] = useActionState(savePost, {
     errors: {},
   });
@@ -35,18 +37,24 @@ export default function PostForm({
   const [showErrorBanner, setShowErrorBanner] = useState(false);
 
   const [preview, setPreview] = useState(false);
+  //persist values across renders without causing re-renders when the value changes (cursor position)
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  //restore cursor position
   const cursorRef = useRef(0);
+  //keep track of previous preview state to restore cursor position when closing preview
   const previousPreviewRef = useRef(preview);
 
+  //restore cursor position when closing preview
   useEffect(() => {
+    //if we were previously in preview mode and now we're not, restore cursor position
     if (previousPreviewRef.current && !preview && textareaRef.current) {
       textareaRef.current.focus();
       textareaRef.current.setSelectionRange(cursorRef.current, cursorRef.current);
     }
 
+    //update previous preview state
     previousPreviewRef.current = preview;
-  }, [preview]);
+  }, [preview]); //run this effect whenever preview state changes
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -118,13 +126,13 @@ export default function PostForm({
                   data-testid="preview-button"
                   style={{ borderColor: "#1A5134", color: "#1A5134" }}
                   className="border rounded-lg px-3 py-1 text-sm font-semibold"
+                  //capture cursor position before textarea loses focus when clicking preview button
                   onPointerDownCapture={() => {
                     if (!preview && textareaRef.current) {
-                      cursorRef.current = textareaRef.current.selectionStart ?? 0;
+                      cursorRef.current = textareaRef.current.selectionStart || 0;
                     }
                   }}
-                  onClick={(e) => {
-                    e.preventDefault();
+                  onClick={() => {
                     setPreview(!preview);
                   }}
                 >
@@ -135,12 +143,13 @@ export default function PostForm({
                 <textarea
                   id="content"
                   name="content"
-                  ref={textareaRef}
+                  ref={textareaRef} //attach ref to textarea to manage focus and cursor position
                   value={fields.content}
                   onChange={handleChange}
                   rows={15}
                   className="bg-gray-100 rounded-xl px-2 py-2 focus:outline focus:ring-5 focus:ring-gray-200"
                   onSelect={(e) => {
+                    //update cursor position in ref whenever user moves cursor in textarea
                     cursorRef.current = e.currentTarget.selectionStart;
                   }}
                 />
