@@ -11,7 +11,7 @@ export default function LogoutButton() {
     setIsLoggingOut(true);
 
     try {
-      await fetch("/api/auth/logout", {
+      await fetch("/api/auth", {
         method: "DELETE",
       });
 

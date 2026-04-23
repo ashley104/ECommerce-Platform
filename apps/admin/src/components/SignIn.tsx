@@ -1,10 +1,8 @@
-import { handleLogin } from "../app/actions/authAction";
-
 export default function SignIn() {
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#F0FCF5" }}>
       <div className="w-full max-w-md mx-4 border p-5 bg-white shadow-lg rounded-lg">
-        <form action={handleLogin}>
+        <form action="/api/auth" method="post">
           <p className="text-base font-semibold" style={{ color: "#1A5134" }}>Admin Sign In</p>
           <p className="text-base text-gray-500 pb-5">
             Sign in to your account

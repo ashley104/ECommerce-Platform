@@ -1,4 +1,4 @@
-import { handleLogout } from "../app/actions/authAction";
+import LogoutButton from "./LogoutButton";
 import PostList from "./PostList";
 
 export default function AdminHome() {
@@ -15,11 +15,7 @@ export default function AdminHome() {
         }}>
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl text-white font-semibold">Admin of Full Stack Blog</h1>
-          <button 
-            onClick={handleLogout} 
-            className="bg-white text-[#1A5134] hover:bg-gray-100 rounded-md px-3 py-2 font-medium">
-            Logout
-          </button>
+          <LogoutButton />
         </div>
       </header>
       <PostList />

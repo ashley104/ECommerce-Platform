@@ -1,14 +1,33 @@
 "use server";
 
-import { login, logout } from "../../utils/auth";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+async function getOrigin() {
+  const requestHeaders = await headers();
+  const host = requestHeaders.get("host");
+  const protocol = requestHeaders.get("x-forwarded-proto") || "http";
+
+  if (!host) {
+    return "http://localhost:3002";
+  }
+
+  return `${protocol}://${host}`;
+}
+
 export async function handleLogin(formData: FormData) {
-  const password = formData.get("password") as string;
+  const password = String(formData.get("password") || "");
+  const origin = await getOrigin();
 
-  const success = await login(password);
+  const response = await fetch(`${origin}/api/auth`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ password }),
+  });
 
-  if (!success) {
+  if (!response.ok) {
     return;
   }
 
@@ -16,6 +35,10 @@ export async function handleLogin(formData: FormData) {
 }
 
 export async function handleLogout() {
-  await logout();
+  const origin = await getOrigin();
+
+  await fetch(`${origin}/api/auth`, {
+    method: "DELETE",
+  });
   redirect("/");
 }
