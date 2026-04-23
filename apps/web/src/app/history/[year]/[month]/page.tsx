@@ -1,21 +1,17 @@
 import { AppLayout } from "@/components/Layout/AppLayout";
 import { Main } from "@/components/Main";
-import { getPostsForWeb } from "@repo/db/posts";
+import { getPostsByHistory } from "@repo/db/posts";
 
 export default async function Page({
   params,
 }: {
   params: Promise<{ year: string; month: string }>;
 }) {
-  const posts = await getPostsForWeb();
-
   const { year, month } = await params;
-  const historyPosts = posts.filter((post) => {
-    const postDate = post.date;
-    return (
-      postDate.getFullYear().toString() === year && postDate.getMonth() + 1 === parseInt(month)
-    );
-  });
+  const historyPosts = await getPostsByHistory(
+    Number(year),
+    Number(month),
+  );
 
   if (historyPosts.length === 0) {
     return (

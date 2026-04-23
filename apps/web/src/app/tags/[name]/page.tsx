@@ -1,25 +1,15 @@
 import { AppLayout } from "@/components/Layout/AppLayout";
 import { Main } from "@/components/Main";
 import styles from "@/app/page.module.css";
-import { getPostsForWeb } from "@repo/db/posts";
-import { toUrlPath } from "@repo/utils/url";
+import { getPostsByTag } from "@repo/db/posts";
 
 export default async function Page({
   params,
 }: {
   params: Promise<{ name: string }>;
 }) {
-  const posts = await getPostsForWeb();
-
   const { name } = await params;
-  const filteredPosts = posts.filter((post) => {
-    const tags = post.tags.split(",").map((t) => toUrlPath(t.trim()));
-
-    if (tags.includes(name)) {
-      return true;
-    }
-    return false;
-  });
+  const filteredPosts = await getPostsByTag(name);
 
   return (
     <AppLayout selectedTag={name}>
