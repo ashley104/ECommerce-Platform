@@ -19,10 +19,6 @@ const postQuery = {
       },
     },
   },
-  //newest posts first
-  orderBy: {
-    date: "desc",
-  },
 } as const; //make object read-only to ensure type safety
 
 function mapPostRow(post: PostRow): Post {

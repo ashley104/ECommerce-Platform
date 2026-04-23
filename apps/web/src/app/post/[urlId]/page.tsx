@@ -1,4 +1,5 @@
 import { AppLayout } from "@/components/Layout/AppLayout";
+import { LikeButton } from "@/components/Blog/LikeButton";
 import {
   getPostForWebByUrlId,
   incrementPostViewsById,
@@ -31,7 +32,7 @@ export default async function Page({
 
   return (
     <AppLayout>
-      <article className="pt-8 pl-15 pr-39" data-test-id={`blog-post-${post.id}`}>
+      <article className="pt-8 pl-15 pr-39 pb-15" data-test-id={`blog-post-${post.id}`}>
         <div className="flex gap-15 text-sm text-gray-500">
           <p>{formattedDate}</p>
           <p className="font-semibold">{post.category}</p>
@@ -49,9 +50,9 @@ export default async function Page({
           dangerouslySetInnerHTML={{ __html: renderedContent }}
         />
         <hr className="border-gray-300 pb-3" />
-        <div className="flex gap-x-200">
+        <div className="flex gap-x-180 items-center">
           <p className="text-gray-500">{post.views + 1} views</p>
-          <p className="text-gray-500">{post.likes} likes</p>
+          <LikeButton postId={post.id} initialLikes={post.likes} />
         </div>
       </article>
     </AppLayout>
