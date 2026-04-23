@@ -1,7 +1,7 @@
 import { AppLayout } from "@/components/Layout/AppLayout";
 import { Main } from "@/components/Main";
 import styles from "@/app/page.module.css";
-import { posts } from "@repo/db/data";
+import { getPostsForWeb } from "@repo/db/posts";
 import { toUrlPath } from "@repo/utils/url";
 
 export default async function Page({
@@ -9,6 +9,8 @@ export default async function Page({
 }: {
   params: Promise<{ name: string }>;
 }) {
+  const posts = await getPostsForWeb();
+
   //take category name from url params
   const { name } = await params;
   const filteredPosts = posts.filter((post) => {

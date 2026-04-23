@@ -1,12 +1,14 @@
 import { AppLayout } from "@/components/Layout/AppLayout";
 import { Main } from "@/components/Main";
-import { posts } from "@repo/db/data";
+import { getPostsForWeb } from "@repo/db/posts";
 
 export default async function Page({
   params,
 }: {
   params: Promise<{ year: string; month: string }>;
 }) {
+  const posts = await getPostsForWeb();
+
   const { year, month } = await params;
   const historyPosts = posts.filter((post) => {
     const postDate = post.date;

@@ -1,5 +1,8 @@
 import { AppLayout } from "@/components/Layout/AppLayout";
-import { posts } from "@repo/db/data";
+import {
+  getPostForWebByUrlId,
+  incrementPostViewsById,
+} from "@repo/db/posts";
 import { marked } from "marked";
 import Link from "next/link";
 
@@ -9,11 +12,13 @@ export default async function Page({
   params: Promise<{ urlId: string }>;
 }) {
   const { urlId } = await params;
-  const post = posts.find((post) => post.urlId === urlId);
+  const post = await getPostForWebByUrlId(urlId);
 
   if (!post) {
     return <>0 Posts</>;
   }
+
+  await incrementPostViewsById(post.id);
 
   const renderedContent = marked.parse(post.content);
   // Format date as "DD MMM YYYY"

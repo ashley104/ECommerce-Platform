@@ -1,13 +1,15 @@
 import { AppLayout } from "@/components/Layout/AppLayout";
 import { Main } from "@/components/Main";
 import styles from "@/app/page.module.css";
-import { posts } from "@repo/db/data";
+import { getPostsForWeb } from "@repo/db/posts";
 
 export default async function Page({
   searchParams,
 }: {
   searchParams: Promise<{ q: string }>;
 }) {
+  const posts = await getPostsForWeb();
+
   const q = (await searchParams)?.q || "";
   const query = q.trim().toLowerCase();
 
