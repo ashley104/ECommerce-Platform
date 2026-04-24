@@ -1,7 +1,8 @@
 import LogoutButton from "./LogoutButton";
 import PostList from "./PostList";
+import type { Post } from "@repo/db/data";
 
-export default function AdminHome() {
+export default function AdminHome({ initialPosts }: { initialPosts: Post[] }) {
   return (
     <div
       className="min-h-screen"
@@ -18,7 +19,7 @@ export default function AdminHome() {
           <LogoutButton />
         </div>
       </header>
-      <PostList />
+      <PostList initialPosts={initialPosts} />
     </div>
   );
 }

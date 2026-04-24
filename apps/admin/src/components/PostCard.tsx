@@ -4,11 +4,22 @@ import type { Post } from "@repo/db/data";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function PostCard({ post }: { post: Post }) {
-  const [showMessage, setShowMessage] = useState(false);
+export default function PostCard({
+  post,
+  onToggleActive,
+}: {
+  post: Post;
+  onToggleActive: (postId: number, active: boolean) => Promise<void>;
+}) {
+  const [isSaving, setIsSaving] = useState(false);
 
-  function handleClick() {
-    setShowMessage((prev) => !prev);
+  async function handleClick() {
+    setIsSaving(true);
+    try {
+      await onToggleActive(post.id, !post.active);
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   function displayTags(tag: string) {
@@ -19,10 +30,11 @@ export default function PostCard({ post }: { post: Post }) {
   }
 
   // Format date as "month dd, yyyy"
-  function formatDate(date: Date) {
-    const month = date.toLocaleString("en-US", { month: "short" });
-    const day = date.getDate();
-    const year = date.getFullYear();
+  function formatDate(date: Date | string) {
+    const parsedDate = new Date(date);
+    const month = parsedDate.toLocaleString("en-US", { month: "short" });
+    const day = parsedDate.getDate();
+    const year = parsedDate.getFullYear();
     return `${month} ${day}, ${year}`; 
   }
 
@@ -54,15 +66,12 @@ export default function PostCard({ post }: { post: Post }) {
           className="hover:opacity-90 rounded px-3 py-1 mt-2"
           type="button" 
           onClick={handleClick}
+          disabled={isSaving}
         >
           {post.active ? "Active" : "Inactive"}
         </button>
           <p className="text-gray-500 text-sm">Posted on {formatDate(post.date)}</p>
         </div>
-        {showMessage ? 
-        <p className="text-sm font-medium">
-          Post "{post.title}" is currently {post.active ? "Active" : "Inactive"}
-        </p> : null}
       </div>
     </article>
   );

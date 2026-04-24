@@ -55,6 +55,28 @@ export async function getPostsForWeb(): Promise<Post[]> {
   return findPosts();
 }
 
+export async function getPostsForAdmin(): Promise<Post[]> {
+  const dbPosts = (await client.db.post.findMany({
+    ...postQuery,
+  })) as PostRow[];
+
+  return dbPosts.map(mapPostRow);
+}
+
+export async function setPostActiveById(id: number, active: boolean): Promise<Post | null> {
+  const updatedPost = (await client.db.post.update({
+    where: {
+      id,
+    },
+    data: {
+      active,
+    },
+    ...postQuery,
+  })) as PostRow;
+
+  return mapPostRow(updatedPost);
+}
+
 export async function getPostsBySearch(query: string): Promise<Post[]> {
   const q = query.trim();
   if (!q) {
