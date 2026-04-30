@@ -2,13 +2,20 @@ import { client } from "@repo/db/client";
 import { NextResponse, type NextRequest } from "next/server";
 
 function getRequestIp(request: NextRequest): string {
+  //get original client IP
   const forwardedFor = request.headers.get("x-forwarded-for");
 
   if (forwardedFor) {
-    return forwardedFor.split(",")[0]?.trim() || "127.0.0.1";
+    //x-forwarded-for may contain multiple IPs if there are multiple proxies,
+    // take the first one which is the original client IP
+    const ip = forwardedFor.split(",")[0]?.trim();
+    if (ip) return ip;
   }
 
-  return request.headers.get("x-real-ip") || "127.0.0.1";
+  const realIp = request.headers.get("x-real-ip");
+  if (realIp) return realIp;
+
+  return "unknown";
 }
 
 export async function POST(request: NextRequest) {
@@ -33,7 +40,7 @@ export async function POST(request: NextRequest) {
       id: postId,
     },
     select: {
-      id: true,
+      id: true, //only need to select id to check existence, no need to fetch other fields
     },
   });
 

@@ -83,6 +83,7 @@ export async function getPostsBySearch(query: string): Promise<Post[]> {
     return findPosts();
   }
 
+  //case-insensitive search for query in title, description, content, category, or tags
   return findPosts({
     OR: [
       { title: { contains: q, mode: "insensitive" } },
@@ -98,7 +99,7 @@ export async function getPostsByCategory(categorySlug: string): Promise<Post[]> 
   return findPosts({
     category: {
       equals: categorySlug,
-      mode: "insensitive",
+      mode: "insensitive", //no case-sensitive search
     },
   });
 }
@@ -111,7 +112,7 @@ export async function getPostsByTag(tagSlug: string): Promise<Post[]> {
   }
 
   return findPosts({
-    //match any of the possible tag
+    //match any of the possible tags
     OR: possibleTags.map((tag) => ({
       tags: {
         contains: tag, //match tag as substring to allow multiple tags in a post
@@ -185,8 +186,10 @@ export async function createPost(data: {
   category: string;
   tags: string;
 }): Promise<Post> {
+  //generate id by counting existing posts and adding 1
+  const id = await client.db.post.count() + 1;
   const newPost = (await client.db.post.create({
-    data,
+    data: { ...data, id },
     ...postQuery,
   })) as PostRow;
 
@@ -210,6 +213,7 @@ export async function updatePost(
     ...postQuery,
   })) as PostRow | null;
 
+  //if no post was found with the given id, return null
   if (!updatedPost) {
     return null;
   }

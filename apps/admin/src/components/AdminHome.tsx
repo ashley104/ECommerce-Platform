@@ -26,7 +26,7 @@ export default function AdminHome({ initialPosts }: { initialPosts: Post[] }) {
       </header>
       {isLoggingOut ? (
         <div className="container mx-auto px-4 py-8">
-          <p className="text-base text-gray-700">Sign in to your account</p>
+          <p className="text-base text-gray-700">Logging out...</p>
         </div>
       ) : (
         <PostList initialPosts={initialPosts} />

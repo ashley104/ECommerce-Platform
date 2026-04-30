@@ -19,16 +19,13 @@ export function LikeButton({
     try {
       const response = await fetch("/api/likes", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ postId }),
+        headers: { "Content-Type": "application/json" }, //specify JSON body  
+        body: JSON.stringify({ postId }), //send postId in request body as JSON
       });
 
-      if (!response.ok) {
-        return;
-      }
+      if (!response.ok) throw new Error("Failed to update likes");
 
+      //expect response to contain updated likes count and whether the post is now liked by the user
       const data: { likes?: number; liked?: boolean } = await response.json();
 
       if (typeof data.likes === "number") {

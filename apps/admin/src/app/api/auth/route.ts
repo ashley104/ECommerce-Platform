@@ -4,12 +4,15 @@ import { NextResponse, type NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
   const contentType = request.headers.get("content-type") || "";
-
   let password = "";
 
   if (contentType.includes("application/json")) {
-    const body = (await request.json()) as { password?: string };
-    password = body.password?.trim() || "";
+    try {
+      const body = (await request.json()) as { password?: string };
+      password = String(body.password || "").trim();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
   } else {
     const formData = await request.formData();
     password = String(formData.get("password") || "").trim();
@@ -20,19 +23,17 @@ export async function POST(request: NextRequest) {
   }
 
   const token = jwt.sign({ role: "admin" }, env.JWT_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "30m",
   });
 
-  const response = contentType.includes("application/json")
-    ? NextResponse.json({ ok: true }, { status: 200 })
-    : NextResponse.redirect(new URL("/", request.url));
+  const response = NextResponse.redirect(new URL("/", request.url));
 
   response.cookies.set("auth_token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24,
+    httpOnly: true, //not accessible to client-side JavaScript
+    secure: process.env.NODE_ENV === "production", //only sent over HTTPS in production
+    sameSite: "strict", //not sent with cross-site requests
+    path: "/", //cookie is sent for all paths in the domain
+    maxAge: 60 * 30, //30 minutes in seconds
   });
 
   return response;
@@ -43,10 +44,8 @@ export async function DELETE() {
 
   response.cookies.set("auth_token", "", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
     path: "/",
-    expires: new Date(0),
+    maxAge: 0,
   });
 
   return response;
