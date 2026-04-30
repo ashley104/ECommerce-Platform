@@ -1,8 +1,13 @@
+"use client";
+
+import { useState } from "react";
 import LogoutButton from "./LogoutButton";
 import PostList from "./PostList";
 import type { Post } from "@repo/db/data";
 
 export default function AdminHome({ initialPosts }: { initialPosts: Post[] }) {
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   return (
     <div
       className="min-h-screen"
@@ -16,10 +21,16 @@ export default function AdminHome({ initialPosts }: { initialPosts: Post[] }) {
         }}>
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl text-white font-semibold">Admin of Full Stack Blog</h1>
-          <LogoutButton />
+          <LogoutButton onLogoutStart={() => setIsLoggingOut(true)} />
         </div>
       </header>
-      <PostList initialPosts={initialPosts} />
+      {isLoggingOut ? (
+        <div className="container mx-auto px-4 py-8">
+          <p className="text-base text-gray-700">Sign in to your account</p>
+        </div>
+      ) : (
+        <PostList initialPosts={initialPosts} />
+      )}
     </div>
   );
 }

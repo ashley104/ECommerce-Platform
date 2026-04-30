@@ -48,7 +48,7 @@ export function LikeButton({
       <p>{likes} likes</p>
       <button
         type="button"
-        data-testid="like-button"
+        data-test-id="like-button"
         onClick={handleClick}
         disabled={isPending}
         className="rounded-full border border-gray-300 px-4 py-1 text-sm font-medium text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"

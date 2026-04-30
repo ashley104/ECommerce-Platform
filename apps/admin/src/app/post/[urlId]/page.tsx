@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { isLoggedIn } from "../../../utils/auth";
-import { posts } from "@repo/db/data";
+import { getPostByUrlIdForAdmin } from "@repo/db/posts";
 import EditPost from "../../../components/EditPost";
 
 export default async function UpdatePost({
@@ -14,12 +14,12 @@ export default async function UpdatePost({
     redirect("/");
   }
 
-  // get post data
+  // get post data from database
   const { urlId } = await params;
-  const post = posts.find((p) => p.urlId === urlId);
+  const post = await getPostByUrlIdForAdmin(urlId);
 
   if (!post) {
-    return <>0 Posts</>;
+    return <>Post not found</>;
   }
 
   return (

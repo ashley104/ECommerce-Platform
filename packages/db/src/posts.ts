@@ -160,3 +160,59 @@ export async function incrementPostViewsById(id: number): Promise<void> {
     },
   });
 }
+
+export async function getPostByUrlIdForAdmin(urlId: string): Promise<Post | null> {
+  const post = (await client.db.post.findUnique({
+    where: {
+      urlId,
+    },
+    ...postQuery,
+  })) as PostRow | null;
+
+  if (!post) {
+    return null;
+  }
+
+  return mapPostRow(post);
+}
+
+export async function createPost(data: {
+  urlId: string;
+  title: string;
+  content: string;
+  description: string;
+  imageUrl: string;
+  category: string;
+  tags: string;
+}): Promise<Post> {
+  const newPost = (await client.db.post.create({
+    data,
+    ...postQuery,
+  })) as PostRow;
+
+  return mapPostRow(newPost);
+}
+
+export async function updatePost(
+  id: number,
+  data: {
+    title: string;
+    content: string;
+    description: string;
+    imageUrl: string;
+    category: string;
+    tags: string;
+  }
+): Promise<Post | null> {
+  const updatedPost = (await client.db.post.update({
+    where: { id },
+    data,
+    ...postQuery,
+  })) as PostRow | null;
+
+  if (!updatedPost) {
+    return null;
+  }
+
+  return mapPostRow(updatedPost);
+}
