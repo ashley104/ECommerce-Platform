@@ -42,11 +42,7 @@ export async function POST(request: NextRequest) {
 export async function DELETE() {
   const response = NextResponse.json({ ok: true }, { status: 200 });
 
-  response.cookies.set("auth_token", "", {
-    httpOnly: true,
-    path: "/",
-    maxAge: 0,
-  });
+  response.cookies.delete("auth_token");
 
   return response;
 }

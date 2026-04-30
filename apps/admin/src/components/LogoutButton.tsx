@@ -1,23 +1,11 @@
 'use client';
 
-import { useRouter } from "next/navigation";
-
-export default function LogoutButton({
-  onLogoutStart,
-}: {
-  onLogoutStart?: () => void;
-}) {
-  const router = useRouter();
-
+export default function LogoutButton() {
   async function handleLogout() {
-    onLogoutStart?.();
-
     await fetch("/api/auth", {
       method: "DELETE",
     });
-
-    router.refresh();
-    router.push("/");
+    window.location.href = "/";
   }
 
   return (
