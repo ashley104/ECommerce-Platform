@@ -10,6 +10,7 @@ import PostHeader from "./PostHeader";
 
 type PostFormFields = {
   title: string;
+  category: string;
   description: string;
   content: string;
   tags: string;
@@ -17,12 +18,14 @@ type PostFormFields = {
 };
 
 type PostFormProps = {
+  postId?: number;
   initialFields: PostFormFields;
   headerAction: "Create" | "Edit";
   backgroundColor: string;
 };
 
 export default function PostForm({
+  postId,
   initialFields,
   headerAction,
   backgroundColor,
@@ -87,6 +90,7 @@ export default function PostForm({
       <div className="container mx-auto px-4 py-8 max-w-3xl">
         <div className="bg-white p-6 rounded-xl shadow">
           <form action={formAction} onSubmit={handleSubmit} className="space-y-6">
+            {postId && <input type="hidden" name="postId" value={postId} />}
             <div className="flex flex-col gap-1">
               <label className="font-semibold text-sm" htmlFor="title">
                 Title
@@ -99,6 +103,19 @@ export default function PostForm({
                 onChange={handleChange}
               />
               <p className="text-red-500 text-sm">{errors.title}</p>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="font-semibold text-sm" htmlFor="category">
+                Category
+              </label>
+              <input
+                className="bg-gray-100 rounded-xl px-2 py-2 focus:outline focus:ring-5 focus:ring-gray-200"
+                id="category"
+                name="category"
+                value={fields.category}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="flex flex-col gap-1">

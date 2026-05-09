@@ -1,29 +1,18 @@
 'use client';
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-
 export default function LogoutButton() {
-  const router = useRouter();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-
   async function handleLogout() {
-    setIsLoggingOut(true);
-
-    try {
-      await fetch("/api/auth/logout", {
-        method: "DELETE",
-      });
-
-      router.refresh();
-    } finally {
-      setIsLoggingOut(false);
-    }
+    await fetch("/api/auth", {
+      method: "DELETE",
+    });
+    window.location.href = "/";
   }
 
   return (
-    <button type="button" onClick={handleLogout} disabled={isLoggingOut}>
-      {isLoggingOut ? "Logging out..." : "Logout"}
+    <button 
+      onClick={handleLogout} 
+      className="bg-white text-[#1A5134] hover:bg-gray-100 rounded-md px-3 py-2 font-medium">
+      Logout
     </button>
   );
 }

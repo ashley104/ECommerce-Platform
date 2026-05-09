@@ -1,7 +1,7 @@
 import { AppLayout } from "@/components/Layout/AppLayout";
 import { Main } from "@/components/Main";
 import styles from "@/app/page.module.css";
-import { posts } from "@repo/db/data";
+import { getPostsBySearch } from "@repo/db/posts";
 
 export default async function Page({
   searchParams,
@@ -9,20 +9,7 @@ export default async function Page({
   searchParams: Promise<{ q: string }>;
 }) {
   const q = (await searchParams)?.q || "";
-  const query = q.trim().toLowerCase();
-
-  const filteredPosts = posts.filter((post) => {
-    const searchableText = [
-      post.title,
-      post.description,
-      post.content,
-      post.category,
-      post.tags,
-    ]
-    .join(" ")
-    .toLowerCase();
-    return searchableText.includes(query);
-  });
+  const filteredPosts = await getPostsBySearch(q);
 
   return (
     <AppLayout query={q}>

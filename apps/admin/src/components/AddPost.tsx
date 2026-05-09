@@ -7,6 +7,7 @@ export default function AddPost() {
     <PostForm
       initialFields={{
         title: "",
+        category: "",
         description: "",
         content: "",
         tags: "",

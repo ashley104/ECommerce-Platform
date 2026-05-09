@@ -1,6 +1,6 @@
 import { AppLayout } from "@/components/Layout/AppLayout";
 import { Main } from "@/components/Main";
-import { posts } from "@repo/db/data";
+import { getPostsByHistory } from "@repo/db/posts";
 
 export default async function Page({
   params,
@@ -8,12 +8,10 @@ export default async function Page({
   params: Promise<{ year: string; month: string }>;
 }) {
   const { year, month } = await params;
-  const historyPosts = posts.filter((post) => {
-    const postDate = post.date;
-    return (
-      postDate.getFullYear().toString() === year && postDate.getMonth() + 1 === parseInt(month)
-    );
-  });
+  const historyPosts = await getPostsByHistory(
+    Number(year),
+    Number(month),
+  );
 
   if (historyPosts.length === 0) {
     return (

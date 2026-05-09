@@ -1,20 +1,15 @@
 import { AppLayout } from "@/components/Layout/AppLayout";
 import { Main } from "@/components/Main";
 import styles from "@/app/page.module.css";
-import { posts } from "@repo/db/data";
-import { toUrlPath } from "@repo/utils/url";
+import { getPostsByCategory } from "@repo/db/posts";
 
 export default async function Page({
   params,
 }: {
   params: Promise<{ name: string }>;
 }) {
-  //take category name from url params
   const { name } = await params;
-  const filteredPosts = posts.filter((post) => {
-    const category = toUrlPath(post.category);
-    return category === name;
-  });
+  const filteredPosts = await getPostsByCategory(name);
 
   if (filteredPosts.length === 0) {
     return (
