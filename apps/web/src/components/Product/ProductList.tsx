@@ -1,8 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { ShoppingCart, Search, Filter } from "lucide-react";
 
+import { useCart } from "./CartContext";
 import ProductCard from "./ProductCard";
 import type { Product } from "@repo/db/data";
 
@@ -14,7 +16,7 @@ type StorefrontPageProps = {
 export default function StorefrontPage({ products, categories }: StorefrontPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  //const [cartQuantities, setCartQuantities] = useState<Record<number, number>>({});
+  const { addProduct, getQuantity, itemCount, subtotal } = useCart();
 
   const filteredProducts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -32,17 +34,6 @@ export default function StorefrontPage({ products, categories }: StorefrontPageP
       return matchesSearch && matchesCategory;
     });
   }, [products, searchQuery, selectedCategory]);
-  
-  const cartItemCount = 0;
-
-  //const cartItemCount = Object.values(cartQuantities).reduce((sum, quantity) => sum + quantity, 0);
-
-  // function handleAddToCart(product: StorefrontProduct) {
-  //   setCartQuantities((current) => ({
-  //     ...current,
-  //     [product.id]: Math.min((current[product.id] ?? 0) + 1, product.stock),
-  //   }));
-  // }
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -51,10 +42,12 @@ export default function StorefrontPage({ products, categories }: StorefrontPageP
           <div className="flex justify-between items-center h-16">
             <span className="font-bold text-xl text-blue-800">B2C Store</span>
 
-            <div className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-blue-700">
-              <ShoppingCart className="w-5 h-5"/>
-              Cart
-              <span className="rounded bg-blue-700 px-2 py-0.5 text-xs text-white">{cartItemCount}</span>
+            <div className="cursor-pointer inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-blue-700">
+              <Link href="/home/cart" className="inline-flex items-center gap-2">
+                <ShoppingCart className="w-5 h-5"/>
+                Cart
+                <span className="rounded bg-blue-700 px-2 py-0.5 text-xs text-white">{itemCount}</span>
+              </Link>
             </div>
           </div>
         </div>
@@ -107,8 +100,8 @@ export default function StorefrontPage({ products, categories }: StorefrontPageP
               <ProductCard
                 key={product.id}
                 product={product}
-                quantityInCart={0}
-                onAddToCart={() => {}}
+                quantityInCart={getQuantity(product.id)}
+                onAddToCart={addProduct}
               />
             ))}
           </div>

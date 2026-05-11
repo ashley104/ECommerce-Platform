@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CheckIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { Check, ShoppingCart } from "lucide-react";
 
 import type { Product } from "@repo/db/data";
 
@@ -13,18 +13,18 @@ type ProductCardProps = {
 
 export default function ProductCard({ product, quantityInCart, onAddToCart }: ProductCardProps) {
   const isOutOfStock = product.stock === 0;
-  // const [isAdding, setIsAdding] = useState(false);
-  // const reachedStockLimit = quantityInCart >= product.stock && product.stock > 0;
+  const [isAdding, setIsAdding] = useState(false);
+  const reachedStockLimit = quantityInCart >= product.stock && product.stock > 0;
 
-  // function handleAddToCart() {
-  //   if (isOutOfStock || reachedStockLimit) {
-  //     return;
-  //   }
+  function handleAddToCart() {
+    if (isOutOfStock || reachedStockLimit) {
+      return;
+    }
 
-  //   setIsAdding(true);
-  //   onAddToCart(product);
-  //   window.setTimeout(() => setIsAdding(false), 900);
-  // }
+    setIsAdding(true);
+    onAddToCart(product);
+    window.setTimeout(() => setIsAdding(false), 900);
+  }
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
@@ -64,29 +64,31 @@ export default function ProductCard({ product, quantityInCart, onAddToCart }: Pr
 
           <button
             type="button"
-            // onClick={handleAddToCart}
-            // disabled={isOutOfStock || isAdding || reachedStockLimit}
-            // className={`inline-flex h-10 items-center justify-center gap-2 rounded-md px-3 text-sm font-semibold transition ${
-            //   isOutOfStock || reachedStockLimit
-            //     ? "cursor-not-allowed bg-slate-100 text-slate-400"
-            //     : isAdding
-            //       ? "bg-emerald-600 text-white"
-            //       : quantityInCart > 0
-            //         ? "bg-slate-100 text-slate-800 hover:bg-slate-200"
-            //         : "bg-slate-950 text-white hover:bg-slate-800"
-            // }`}
+            onClick={handleAddToCart}
+            disabled={isOutOfStock || isAdding || reachedStockLimit}
+            className={`inline-flex cursor-pointer h-10 items-center justify-center gap-2 rounded-md px-3 text-sm font-semibold transition ${
+              isOutOfStock || reachedStockLimit
+                ? "cursor-not-allowed bg-slate-100 text-slate-400"
+                : isAdding
+                  ? "bg-emerald-600 text-white"
+                  : quantityInCart > 0
+                    ? "bg-slate-100 text-slate-800 hover:bg-slate-200"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+            }`}
           >
-            {/* {isAdding ? (
+            {isAdding ? (
               <>
-                <CheckIcon className="h-4 w-4" aria-hidden="true" />
+                <Check className="h-4 w-4" aria-hidden="true" />
                 Added
               </>
+            ) : reachedStockLimit ? (
+              <>Max reached</>
             ) : (
               <>
-                <ShoppingCartIcon className="h-4 w-4" aria-hidden="true" />
+                <ShoppingCart className="h-4 w-4" aria-hidden="true" />
                 {quantityInCart > 0 ? "Add More" : "Add"}
               </>
-            )} */}
+            )}
           </button>
         </div>
       </div>
