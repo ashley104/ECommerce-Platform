@@ -1,11 +1,9 @@
-import { Decimal } from "@prisma/client/runtime/library";
-
 export type Product = {
   id: number;
   name: string;
   slug: string;
   description: string;
-  price: Decimal;
+  price: number;
   imageUrl: string;
   category: string;
   stock: number;
@@ -18,7 +16,7 @@ export const initialProducts: Product[] = [
     name: 'Wireless Headphones',
     slug: 'wireless-headphones',
     description: 'Premium noise-cancelling wireless headphones with 30-hour battery life',
-    price: new Decimal('299.99'),
+    price: 299.99,
     imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
     category: 'Electronics',
     stock: 25
@@ -28,7 +26,7 @@ export const initialProducts: Product[] = [
     name: 'Smart Watch',
     slug: 'smart-watch',
     description: 'Fitness tracker with heart rate monitor and GPS',
-    price: new Decimal('399.99'),
+    price: 399.99,
     imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
     category: 'Electronics',
     stock: 15
@@ -38,7 +36,7 @@ export const initialProducts: Product[] = [
     name: 'Cotton T-Shirt',
     slug: 'cotton-t-shirt',
     description: 'Comfortable 100% organic cotton t-shirt',
-    price: new Decimal('29.99'),
+    price: 29.99,
     imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400',
     category: 'Clothing',
     stock: 50
@@ -48,7 +46,7 @@ export const initialProducts: Product[] = [
     name: 'Denim Jeans',
     slug: 'denim-jeans',
     description: 'Classic fit denim jeans with stretch fabric',
-    price: new Decimal('79.99'),
+    price: 79.99,
     imageUrl: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400',
     category: 'Clothing',
     stock: 30
@@ -58,7 +56,7 @@ export const initialProducts: Product[] = [
     name: 'Coffee Maker',
     slug: 'coffee-maker',
     description: 'Programmable coffee maker with thermal carafe',
-    price: new Decimal('89.99'),
+    price: 89.99,
     imageUrl: 'https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=400',
     category: 'Home',
     stock: 20
@@ -68,7 +66,7 @@ export const initialProducts: Product[] = [
     name: 'Yoga Mat',
     slug: 'yoga-mat',
     description: 'Non-slip exercise mat with carrying strap',
-    price: new Decimal('39.99'),
+    price: 39.99,
     imageUrl: 'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=400',
     category: 'Sports',
     stock: 40
@@ -78,7 +76,7 @@ export const initialProducts: Product[] = [
     name: 'Laptop Stand',
     slug: 'laptop-stand',
     description: 'Adjustable aluminum laptop stand for ergonomic working',
-    price: new Decimal('49.99'),
+    price: 49.99,
     imageUrl: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400',
     category: 'Electronics',
     stock: 35
@@ -88,7 +86,7 @@ export const initialProducts: Product[] = [
     name: 'Running Shoes',
     slug: 'running-shoes',
     description: 'Lightweight running shoes with cushioned sole',
-    price: new Decimal('129.99'),
+    price: 129.99,
     imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400',
     category: 'Sports',
     stock: 22
