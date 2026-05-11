@@ -1,5 +1,8 @@
-import { Edit, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { Edit } from "lucide-react";
 import type { Product } from "@repo/db/data";
+
+import DeleteProductButton from "./DeleteProductButton";
 
 type ProductsPanelProps = {
   products: Product[];
@@ -69,22 +72,14 @@ export default function ProductsPanel({ products }: ProductsPanelProps) {
                   </td>
                   <td className="px-5 py-4">
                     <div className="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        disabled
-                        className="rounded-md p-2 text-indigo-500"
+                      <Link
+                        href={`/products/${product.id}/edit`}
+                        className="rounded-md p-2 text-indigo-600 transition hover:bg-indigo-50"
                         aria-label={`Edit ${product.name}`}
                       >
                         <Edit className="h-5 w-5" />
-                      </button>
-                      <button
-                        type="button"
-                        disabled
-                        className="rounded-md p-2 text-rose-500"
-                        aria-label={`Delete ${product.name}`}
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </button>
+                      </Link>
+                      <DeleteProductButton productId={product.id} productName={product.name} />
                     </div>
                   </td>
                 </tr>

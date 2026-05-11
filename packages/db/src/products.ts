@@ -1,18 +1,5 @@
 import { client } from "./client.js";
-
-type ProductRow = {
-  id: number;
-  slug: string;
-  name: string;
-  description: string;
-  imageUrl: string;
-  price: string | number;
-  stock: number;
-  active: boolean;
-  category: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
+import type { Product } from "./data.js";
 
 export async function getProductsForWeb() {
   const products = await client.db.product.findMany({
@@ -31,14 +18,12 @@ export async function getProductsForAdmin() {
   return products;
 }
 
-export async function getProductsByCategory(categorySlug: string) {
-  return client.db.product.findMany({
-    where: { active: true, category: categorySlug },
+export async function getCategories() {
+  const categories = await client.db.product.groupBy({
+    by: ["category"],
   });
-}
 
-export async function getProductBySlug(slug: string) {
-  return client.db.product.findUnique({ where: { slug } });
+  return categories.map((c) => c.category);
 }
 
 export async function createProduct(data: {
@@ -46,7 +31,7 @@ export async function createProduct(data: {
   name: string;
   description: string;
   imageUrl: string;
-  price: string | number;
+  price: number;
   stock?: number;
   category: string;
 }) {
@@ -56,7 +41,7 @@ export async function createProduct(data: {
       name: data.name,
       description: data.description,
       imageUrl: data.imageUrl,
-      price: data.price as any,
+      price: data.price,
       stock: data.stock ?? 0,
       category: data.category,
     },
@@ -72,7 +57,7 @@ export async function updateProduct(
     name: string;
     description: string;
     imageUrl: string;
-    price: string | number;
+    price: number;
     stock: number;
     active: boolean;
     category: string;
@@ -82,10 +67,10 @@ export async function updateProduct(
   return updated;
 }
 
-export async function setProductActiveById(id: number, active: boolean) {
-  return client.db.product.update({ where: { id }, data: { active } });
+export async function deleteProduct(id: number) {
+  await client.db.product.delete({ where: { id } });
 }
 
-export async function decreaseProductStock(id: number, qty: number) {
-  return client.db.product.update({ where: { id }, data: { stock: { decrement: qty } } });
+export async function getProductBySlug(slug: string) {
+  return client.db.product.findUnique({ where: { slug } });
 }

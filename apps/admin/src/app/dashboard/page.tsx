@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getProductsForAdmin } from "@repo/db/products";
 import { listOrders } from "@repo/db/orders";
@@ -38,13 +39,12 @@ export default async function DashboarPage({ searchParams }: DashboardProps) {
       activeTab={activeTab}
       actions={
         activeTab === "products" ? (
-          <button
-            type="button"
-            disabled
-            className="inline-flex items-center justify-center rounded-md bg-indigo-500 px-4 py-2 text-medium font-semibold text-slate-100 shadow-sm"
+          <Link
+            href="/products/create"
+            className="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
           >
             + Add Product
-          </button>
+          </Link>
         ) : null
       }
     >
