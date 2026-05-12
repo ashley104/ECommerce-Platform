@@ -1,17 +1,32 @@
 import { client } from "./client.js";
-import type { Product } from "./data.js";
 
 export async function getProductsForWeb() {
   const products = await client.db.product.findMany({
     where: { active: true },
     orderBy: { createdAt: "desc" },
   });
+  const formattedProducts = products.map((p) => ({
+    ...p,
+    price: p.price.toNumber(),
+  }));
 
-  return products;
+  return formattedProducts;
 }
 
 export async function getProductsForAdmin() {
   const products = await client.db.product.findMany({
+    select: {
+      id: true,
+      slug: true,
+      name: true,
+      description: true,
+      imageUrl: true,
+      price: true,
+      stock: true,
+      active: true,
+      category: true,
+      createdAt: true,
+    },
     orderBy: { createdAt: "desc" },
   });
 

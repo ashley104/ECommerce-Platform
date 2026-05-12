@@ -55,7 +55,7 @@ export default function ProductCard({ product, quantityInCart, onAddToCart }: Pr
             </p>
             <p
               className={`mt-1 text-xs font-medium ${
-                isOutOfStock ? "text-rose-600" : product.stock <= 10 ? "text-amber-600" : "text-slate-500"
+                isOutOfStock ? "text-rose-600" : "text-slate-500"
               }`}
             >
               {isOutOfStock ? "Out of stock" : `${product.stock} in stock`}

@@ -21,8 +21,8 @@ export default function CartPage() {
     clearCart,
   } = useCart();
 
-  const taxEstimate = subtotal * 0.08;
-  const total = subtotal + taxEstimate;
+  //const taxEstimate = subtotal * 0.08;
+  const total = subtotal
 
   if (items.length === 0) {
     return (
@@ -156,10 +156,10 @@ export default function CartPage() {
               <span>Subtotal</span>
               <span className="font-semibold text-slate-950">{currencyFormatter.format(subtotal)}</span>
             </div>
-            <div className="flex items-center justify-between">
+            {/* <div className="flex items-center justify-between">
               <span>Estimated tax</span>
               <span className="font-semibold text-slate-950">{currencyFormatter.format(taxEstimate)}</span>
-            </div>
+            </div> */}
             <div className="flex items-center justify-between border-t border-slate-200 pt-4 text-base">
               <span className="font-semibold text-indigo-700">Total</span>
               <span className="font-semibold text-indigo-700">{currencyFormatter.format(total)}</span>

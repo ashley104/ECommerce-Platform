@@ -8,9 +8,12 @@ import {
   useMemo,
   useState,
 } from "react";
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 import type { Product } from "@repo/db/data";
 
+//products in cart with quantity, picking only necessary fields from Product type
 export type CartItem = Pick<
   Product,
   "id" | "name" | "category" | "imageUrl" | "price" | "stock"
@@ -20,8 +23,8 @@ export type CartItem = Pick<
 
 type CartContextValue = {
   items: CartItem[];
-  itemCount: number;
-  subtotal: number;
+  itemCount: number; // total quantity of all items in the cart
+  subtotal: number; // total price of all items in the cart
   getQuantity: (productId: number) => number;
   addProduct: (product: Product) => void;
   incrementProduct: (productId: number) => void;
