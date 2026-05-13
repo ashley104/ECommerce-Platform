@@ -7,6 +7,7 @@ import { ShoppingCart, Search, Filter } from "lucide-react";
 import { useCart } from "./CartContext";
 import ProductCard from "./ProductCard";
 import type { Product } from "@repo/db/data";
+import { signOut } from "next-auth/react";
 
 type StorefrontPageProps = {
   products: Product[];
@@ -42,12 +43,15 @@ export default function StorefrontPage({ products, categories }: StorefrontPageP
           <div className="flex justify-between items-center h-16">
             <span className="font-bold text-xl text-blue-800">B2C Store</span>
 
-            <div className="cursor-pointer inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-blue-700">
-              <Link href="/home/cart" className="inline-flex items-center gap-2">
+            <div className="cursor-pointer inline-flex items-center gap-2">
+              <Link href="/cart" className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-blue-700">
                 <ShoppingCart className="w-5 h-5"/>
                 Cart
                 <span className="rounded bg-blue-700 px-2 py-0.5 text-xs text-white">{itemCount}</span>
               </Link>
+              <button onClick={() => signOut()} className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-neutral-700 px-3 py-2 text-sm font-semibold text-neutral-50 cursor-pointer">
+                Logout
+              </button>
             </div>
           </div>
         </div>

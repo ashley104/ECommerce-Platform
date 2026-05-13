@@ -7,36 +7,27 @@ import { useCart } from "./CartContext";
 
 const currencyFormatter = new Intl.NumberFormat("en-AU", {
   style: "currency",
-  currency: "ASD",
+  currency: "AUD",
 });
 
 export default function CartPage() {
   const {
     items,
     itemCount,
-    subtotal,
+    subtotal: total,
     incrementProduct,
     decrementProduct,
     removeProduct,
     clearCart,
   } = useCart();
 
-  //const taxEstimate = subtotal * 0.08;
-  const total = subtotal
-
   if (items.length === 0) {
     return (
       <div className="mx-auto flex min-h-screen max-w-5xl items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
         <div className="w-full rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-700">
-            <ShoppingBag className="h-7 w-7" aria-hidden="true" />
-          </div>
           <h1 className="mt-5 text-2xl font-semibold text-slate-950">Your cart is empty</h1>
-          <p className="mt-2 text-sm leading-6 text-slate-500">
-            Browse products and add the items you want to compare before checkout.
-          </p>
           <Link
-            href="/home"
+            href="/"
             className="mt-6 inline-flex h-11 items-center justify-center rounded-md bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-800"
           >
             Continue shopping
@@ -48,6 +39,12 @@ export default function CartPage() {
 
   return (
     <div className="mx-auto min-h-screen max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <Link
+        href="/"
+        className="inline-flex h-11 items-center justify-center rounded-md border border-slate-300 px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 mb-8"
+      >
+        Continue shopping
+      </Link>
       <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
         <section className="flex-1 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-col gap-3 border-b border-slate-200 pb-6 sm:flex-row sm:items-end sm:justify-between">
@@ -57,13 +54,13 @@ export default function CartPage() {
               </p>
               <h1 className="mt-1 text-3xl font-semibold text-indigo-700">Review your items</h1>
             </div>
-            <button
+            {/* <button
               type="button"
               onClick={clearCart}
               className="inline-flex h-10 items-center justify-center rounded-md border border-slate-300 px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
             >
               Clear cart
-            </button>
+            </button> */}
           </div>
 
           <div className="mt-6 space-y-4">
@@ -121,7 +118,7 @@ export default function CartPage() {
                       </div>
 
                       <div className="text-right">
-                        <p className="text-sm font-medium text-slate-500">Line total</p>
+                        <p className="text-sm font-medium text-slate-500">Total</p>
                         <p className="text-lg font-semibold text-slate-950">
                           {currencyFormatter.format(lineTotal)}
                         </p>
@@ -152,14 +149,6 @@ export default function CartPage() {
               <span>Items</span>
               <span className="font-semibold text-slate-950">{itemCount}</span>
             </div>
-            <div className="flex items-center justify-between">
-              <span>Subtotal</span>
-              <span className="font-semibold text-slate-950">{currencyFormatter.format(subtotal)}</span>
-            </div>
-            {/* <div className="flex items-center justify-between">
-              <span>Estimated tax</span>
-              <span className="font-semibold text-slate-950">{currencyFormatter.format(taxEstimate)}</span>
-            </div> */}
             <div className="flex items-center justify-between border-t border-slate-200 pt-4 text-base">
               <span className="font-semibold text-indigo-700">Total</span>
               <span className="font-semibold text-indigo-700">{currencyFormatter.format(total)}</span>
@@ -173,17 +162,7 @@ export default function CartPage() {
             >
               Proceed to checkout
             </Link>
-            <Link
-              href="/home"
-              className="inline-flex h-11 w-full items-center justify-center rounded-md border border-slate-300 px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-            >
-              Continue shopping
-            </Link>
           </div>
-
-          <p className="mt-4 text-xs leading-5 text-slate-500">
-            Review your cart carefully before checkout. Quantities are capped at the current stock.
-          </p>
         </aside>
       </div>
     </div>

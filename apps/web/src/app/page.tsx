@@ -1,14 +1,17 @@
-import { getPostsForWeb } from "@repo/db/posts";
-import { AppLayout } from "../components/Layout/AppLayout";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
 import { Main } from "../components/Main";
 import styles from "./page.module.css";
+import { authOptions } from "@/lib/auth";
 
 export default async function Home() {
-  const posts = await getPostsForWeb();
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/login");
+  }
 
   return (
-    <AppLayout>
-      <Main posts={posts} className={styles.main} />
-    </AppLayout>
+    <Main className={styles.main} />
   );
 }

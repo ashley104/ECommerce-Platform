@@ -1,9 +1,6 @@
-// import "@repo/ui/styles.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { cookies } from "next/headers";
-import { ThemeProvider } from "@/components/Themes/ThemeContext";
-import { CartProvider } from "@/components/Product/CartContext";
+import { Providers } from "./providers";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -16,8 +13,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Full-Stack Blog",
-  description: "Blog about full stack development",
+  title: "B2C Store",
 };
 
 export default async function RootLayout({
@@ -25,15 +21,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const serverCookies = await cookies();
-  const theme = serverCookies.get("theme")?.value || "light";
-
   return (
-    <html lang="en" data-theme={theme} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
-        <ThemeProvider initialTheme={theme === "dark" ? "dark" : "light"}>
-          <CartProvider>{children}</CartProvider>
-        </ThemeProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
