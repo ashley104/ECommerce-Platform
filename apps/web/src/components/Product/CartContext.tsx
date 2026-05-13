@@ -27,6 +27,7 @@ type CartContextValue = {
   incrementProduct: (productId: number) => void;
   decrementProduct: (productId: number) => void;
   removeProduct: (productId: number) => void;
+  clearCart: () => void;
   getQuantity: (productId: number) => number; //get quantity of a specific product in the cart
 };
 
@@ -53,6 +54,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [items]);
+
+  const clearCart = () => {
+    setItems([]);
+    localStorage.removeItem(CART_STORAGE_KEY);
+  };
 
   //add product to cart
   const addProduct = (product: Product) => {
@@ -134,6 +140,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         incrementProduct,
         decrementProduct,
         removeProduct,
+        clearCart,
         getQuantity
       }}
     >

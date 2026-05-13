@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ShoppingCart, Search, Filter } from "lucide-react";
 
 import { useCart } from "./CartContext";
@@ -17,6 +18,7 @@ type StorefrontPageProps = {
 export default function StorefrontPage({ products, categories }: StorefrontPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const router = useRouter();
   const { addProduct, getQuantity, itemCount } = useCart();
 
   const filteredProducts = useMemo(() => {
@@ -49,7 +51,13 @@ export default function StorefrontPage({ products, categories }: StorefrontPageP
                 Cart
                 <span className="rounded bg-blue-700 px-2 py-0.5 text-xs text-white">{itemCount}</span>
               </Link>
-              <button onClick={() => signOut()} className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-neutral-700 px-3 py-2 text-sm font-semibold text-neutral-50 cursor-pointer">
+              <button
+                onClick={async () => {
+                  await signOut({ redirect: false });
+                  router.push("/login");
+                }}
+                className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-neutral-700 px-3 py-2 text-sm font-semibold text-neutral-50 cursor-pointer"
+              >
                 Logout
               </button>
             </div>

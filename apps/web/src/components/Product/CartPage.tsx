@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Minus, Plus, Trash2 } from "lucide-react";
 
 import { useCart } from "./CartContext";
+import CheckoutButton from "../CheckoutButton";
 
 const currencyFormatter = new Intl.NumberFormat("en-AU", {
   style: "currency",
@@ -148,12 +149,7 @@ export default function CartPage() {
           </div>
 
           <div className="mt-6 space-y-3">
-            <Link
-              href="/home/checkout"
-              className="inline-flex h-11 w-full items-center justify-center rounded-md bg-indigo-500 px-5 text-sm font-semibold text-white transition hover:bg-slate-800"
-            >
-              Proceed to checkout
-            </Link>
+            <CheckoutButton />
           </div>
         </aside>
       </div>

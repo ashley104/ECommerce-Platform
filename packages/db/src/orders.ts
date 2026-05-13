@@ -1,4 +1,5 @@
 import { client } from "./client.js";
+import type { Product } from "./data.js";
 
 type OrderItemInput = { productId: number; quantity: number };
 
@@ -18,7 +19,7 @@ export async function createOrder(opts: {
   let subtotal = 0;
 
   const orderItemsData = items.map((it) => {
-    const p = productMap.get(it.productId as number) as any;
+    const p = productMap.get(it.productId as number) as Product;
     const unitPrice = Number(p.price);
     const totalPrice = unitPrice * it.quantity;
     subtotal += totalPrice;
@@ -26,6 +27,7 @@ export async function createOrder(opts: {
     return {
       productId: it.productId,
       quantity: it.quantity,
+      productName: p.name,
       unitPrice: unitPrice,
       totalPrice: totalPrice,
     };
@@ -51,6 +53,7 @@ export async function createOrder(opts: {
           orderId: order.id,
           productId: oi.productId,
           quantity: oi.quantity,
+          productName: oi.productName,
           unitPrice: oi.unitPrice as any,
           totalPrice: oi.totalPrice as any,
         },

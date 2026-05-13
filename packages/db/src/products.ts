@@ -85,7 +85,3 @@ export async function updateProduct(
 export async function deleteProduct(id: number) {
   await client.db.product.delete({ where: { id } });
 }
-
-export async function getProductBySlug(slug: string) {
-  return client.db.product.findUnique({ where: { slug } });
-}
