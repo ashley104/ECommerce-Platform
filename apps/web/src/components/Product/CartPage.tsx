@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 
 import { useCart } from "./CartContext";
 
@@ -17,8 +17,7 @@ export default function CartPage() {
     subtotal: total,
     incrementProduct,
     decrementProduct,
-    removeProduct,
-    clearCart,
+    removeProduct
   } = useCart();
 
   if (items.length === 0) {
@@ -54,13 +53,6 @@ export default function CartPage() {
               </p>
               <h1 className="mt-1 text-3xl font-semibold text-indigo-700">Review your items</h1>
             </div>
-            {/* <button
-              type="button"
-              onClick={clearCart}
-              className="inline-flex h-10 items-center justify-center rounded-md border border-slate-300 px-4 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-            >
-              Clear cart
-            </button> */}
           </div>
 
           <div className="mt-6 space-y-4">

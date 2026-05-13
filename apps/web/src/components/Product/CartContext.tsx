@@ -2,14 +2,10 @@
 
 import {
   createContext,
-  useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from "react";
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
 
 import type { Product } from "@repo/db/data";
 
@@ -21,86 +17,50 @@ export type CartItem = Pick<
   quantity: number;
 };
 
+//value provided by CartContext
 type CartContextValue = {
   items: CartItem[];
   itemCount: number; // total quantity of all items in the cart
   subtotal: number; // total price of all items in the cart
-  getQuantity: (productId: number) => number;
+  
   addProduct: (product: Product) => void;
   incrementProduct: (productId: number) => void;
   decrementProduct: (productId: number) => void;
   removeProduct: (productId: number) => void;
-  clearCart: () => void;
+  getQuantity: (productId: number) => number; //get quantity of a specific product in the cart
 };
 
-const CART_STORAGE_KEY = "ecommerce-platform-cart-v1";
-const CartContext = createContext<CartContextValue | undefined>(undefined);
+//create cart context
+const CartContext = createContext<CartContextValue | null>(null);
 
-function readStoredCart(): CartItem[] {
-  if (typeof window === "undefined") {
-    return [];
-  }
-
-  try {
-    const rawValue = window.localStorage.getItem(CART_STORAGE_KEY);
-
-    if (!rawValue) {
-      return [];
-    }
-
-    const parsed = JSON.parse(rawValue) as CartItem[];
-
-    if (!Array.isArray(parsed)) {
-      return [];
-    }
-
-    return parsed.filter((item) => {
-      return (
-        typeof item?.id === "number" &&
-        typeof item?.name === "string" &&
-        typeof item?.category === "string" &&
-        typeof item?.imageUrl === "string" &&
-        typeof item?.price === "number" &&
-        typeof item?.stock === "number" &&
-        typeof item?.quantity === "number" &&
-        item.quantity > 0
-      );
-    });
-  } catch {
-    return [];
-  }
-}
+// localStorage key
+const CART_STORAGE_KEY = "cart";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  //cart items state
   const [items, setItems] = useState<CartItem[]>([]);
-  const [isHydrated, setIsHydrated] = useState(false);
 
+  // load cart from localStorage when app starts
   useEffect(() => {
-    setItems(readStoredCart());
-    setIsHydrated(true);
+    const storedCart = localStorage.getItem(CART_STORAGE_KEY);
+
+    if (storedCart) {
+      setItems(JSON.parse(storedCart)); //convert json string back to array of cart items and set it to state
+    }
   }, []);
 
+  // save cart whenever items change
   useEffect(() => {
-    if (!isHydrated) {
-      return;
-    }
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+  }, [items]);
 
-    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-  }, [items, isHydrated]);
-
-  const getQuantity = useCallback(
-    (productId: number) => items.find((item) => item.id === productId)?.quantity ?? 0,
-    [items],
-  );
-
-  const addProduct = useCallback((product: Product) => {
-    if (product.stock <= 0) {
-      return;
-    }
-
+  //add product to cart
+  const addProduct = (product: Product) => {
     setItems((currentItems) => {
+      //check if product is already in cart
       const existingItem = currentItems.find((item) => item.id === product.id);
-
+      
+      //if not, add new item with quantity 1
       if (!existingItem) {
         return [
           ...currentItems,
@@ -116,6 +76,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         ];
       }
 
+      //if it is, increment quantity but not above stock
       if (existingItem.quantity >= product.stock) {
         return currentItems;
       }
@@ -124,9 +85,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item,
       );
     });
-  }, []);
+  };
 
-  const incrementProduct = useCallback((productId: number) => {
+  const incrementProduct = (productId: number) => {
     setItems((currentItems) =>
       currentItems.map((item) => {
         if (item.id !== productId || item.quantity >= item.stock) {
@@ -136,9 +97,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         return { ...item, quantity: item.quantity + 1 };
       }),
     );
-  }, []);
+  };
 
-  const decrementProduct = useCallback((productId: number) => {
+  const decrementProduct = (productId: number) => {
     setItems((currentItems) =>
       currentItems
         .map((item) =>
@@ -146,36 +107,42 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         )
         .filter((item) => item.quantity > 0),
     );
-  }, []);
+  };
 
-  const removeProduct = useCallback((productId: number) => {
+  const removeProduct = (productId: number) => {
     setItems((currentItems) => currentItems.filter((item) => item.id !== productId));
-  }, []);
+  };
 
-  const clearCart = useCallback(() => {
-    setItems([]);
-  }, []);
+  //total quantity of all items in the cart
+  const itemCount = items.reduce((total, item) => total + item.quantity, 0);
 
-  const value = useMemo(() => {
-    const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
-    const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  //total price of all items in the cart
+  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-    return {
-      items,
-      itemCount,
-      subtotal,
-      getQuantity,
-      addProduct,
-      incrementProduct,
-      decrementProduct,
-      removeProduct,
-      clearCart,
-    };
-  }, [items, getQuantity, addProduct, incrementProduct, decrementProduct, removeProduct, clearCart]);
+  const getQuantity = (productId: number) => {
+    const item = items.find((item) => item.id === productId);
+    return item ? item.quantity : 0;
+  };
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider
+      value={{
+        items,
+        itemCount,
+        subtotal,
+        addProduct,
+        incrementProduct,
+        decrementProduct,
+        removeProduct,
+        getQuantity
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
 }
 
+//custom hook to use cart context
 export function useCart() {
   const context = useContext(CartContext);
 

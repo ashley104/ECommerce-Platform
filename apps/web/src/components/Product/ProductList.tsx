@@ -17,7 +17,7 @@ type StorefrontPageProps = {
 export default function StorefrontPage({ products, categories }: StorefrontPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const { addProduct, getQuantity, itemCount, subtotal } = useCart();
+  const { addProduct, getQuantity, itemCount } = useCart();
 
   const filteredProducts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
