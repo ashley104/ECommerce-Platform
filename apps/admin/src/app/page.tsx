@@ -1,7 +1,5 @@
 import { isLoggedIn } from "../utils/auth";
 import SignIn from "../components/SignIn";
-import AdminHome from "../components/AdminHome";
-import { getPostsForAdmin } from "@repo/db/posts";
 
 export default async function Home() {
   // use the is logged in function to check if user is authorised
@@ -12,7 +10,5 @@ export default async function Home() {
     return <SignIn />;
   }
 
-  const posts = await getPostsForAdmin();
-
-  return <AdminHome initialPosts={posts} />;
+  return <h1>Hello</h1>;
 }
