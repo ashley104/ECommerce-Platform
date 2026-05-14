@@ -30,18 +30,6 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
   }
 
   return (
-    <ProductFormPage
-      mode="edit"
-      initialFields={{
-        id: product.id,
-        name: product.name,
-        category: product.category,
-        description: product.description,
-        imageUrl: product.imageUrl,
-        price: product.price,
-        stock: product.stock,
-        active: product.active,
-      }}
-    />
+   <h1>Edit Product</h1>
   );
 }

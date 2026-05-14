@@ -11,17 +11,6 @@ export default async function CreateProductPage() {
   }
 
   return (
-    <ProductFormPage
-      mode="create"
-      initialFields={{
-        name: "",
-        category: "",
-        description: "",
-        imageUrl: "",
-        price: "",
-        stock: 0,
-        active: true,
-      }}
-    />
+   <h1>Create Product</h1>
   );
 }

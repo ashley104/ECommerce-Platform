@@ -50,9 +50,9 @@ export default async function DashboarPage({ searchParams }: DashboardProps) {
     >
 
       {activeTab === "products" ? (
-        <ProductsPanel products={products} />
+        <h1>Products</h1>
       ) : (
-        <OrdersPanel orders={orders} />
+        <h1>Orders</h1>
       )}
     </Dashboard>
   );
