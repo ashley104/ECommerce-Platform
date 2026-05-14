@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-import { type BrowserContext } from "@playwright/test";
+import { test as base, type BrowserContext } from "@playwright/test";
 // TODO: Implement seed
 export async function seedData(...options: any[]) {
   /* After assignment two, move the hard coded data to the seed */
@@ -24,5 +24,11 @@ export async function setOptions(
     },
   ]);
 }
+
+export const test = base;
+
+test.use({
+  storageState: ".auth/storefront.json",
+});
 
 export * from "@playwright/test";

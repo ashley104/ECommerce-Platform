@@ -1,5 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
-import "dotenv/config";
+import dotenv from "dotenv";
+import path from "path";
+
+// Ensure Playwright loads the same env file whether run from the CLI or the
+// VS Code extension by resolving the workspace-relative tests/playwright/.env
+dotenv.config({ path: path.resolve(process.cwd(), "tests/playwright/.env") });
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -9,7 +14,6 @@ import "dotenv/config";
 // dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 import fs from "fs";
-import path from "path";
 
 // Define the directory path
 const authDir = path.resolve(".auth");
@@ -64,7 +68,7 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         baseURL: "http://localhost:3002",
       },
-      dependencies: process.env.CI ? ["setup"] : [],
+      // dependencies: process.env.CI ? ["setup"] : [],
     },
     {
       name: "chromium",
@@ -73,7 +77,7 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         baseURL: "http://localhost:3001",
       },
-      dependencies: process.env.CI ? ["setup"] : [],
+      // dependencies: process.env.CI ? ["setup"] : [],
     },
 
     // {
