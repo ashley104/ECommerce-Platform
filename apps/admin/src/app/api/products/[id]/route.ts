@@ -3,7 +3,7 @@ import { client } from "@repo/db/client";
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  // { params }: { params: { id: string } }
 ) {
   try {
     // const productId = Number(params.id);
