@@ -1,11 +1,7 @@
-import Link from "next/link";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getUserRoleFromSession } from "@repo/db/users";
-import { getProductsForAdmin } from "@repo/db/products";
-import { listOrders } from "@repo/db/orders";
-import Dashboard from "../components/dashboard/Dashboard";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);

@@ -1,8 +1,9 @@
 import { notFound, redirect } from "next/navigation";
-import { client } from "@repo/db/client";
-
+import { getUserRoleFromSession } from "@repo/db/users";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+import { getProductById } from "@repo/db/products";
 import ProductFormPage from "../../../../components/dashboard/ProductFormPage";
-import { isLoggedIn } from "../../../../utils/auth";
 
 type EditProductPageProps = {
   params: Promise<{
@@ -11,10 +12,15 @@ type EditProductPageProps = {
 };
 
 export default async function EditProductPage({ params }: EditProductPageProps) {
-  const loggedIn = await isLoggedIn();
+  const session = await getServerSession(authOptions);
 
-  if (!loggedIn) {
-    redirect("/");
+  if (!session) {
+    redirect("/login");
+  } else {
+    const userRole = await getUserRoleFromSession(session);
+    if (userRole !== "ADMIN") {
+      redirect("/login");
+    }
   }
 
   const id = Number((await params).id);
@@ -23,13 +29,16 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
     notFound();
   }
 
-  const product = await client.db.product.findUnique({ where: { id } });
+  const product = await getProductById(id);
 
   if (!product) {
     notFound();
   }
 
   return (
-   <h1>Edit Product</h1>
+    <ProductFormPage
+      mode="edit"
+      initialFields={product}
+    />
   );
 }

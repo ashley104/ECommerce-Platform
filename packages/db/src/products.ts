@@ -29,16 +29,24 @@ export async function getProductsForAdmin() {
     },
     orderBy: { createdAt: "desc" },
   });
+  const formattedProducts = products.map((p) => ({
+    ...p,
+    price: p.price.toNumber(),
+  }));
 
-  return products;
+  return formattedProducts;
 }
 
-export async function getCategories() {
-  const categories = await client.db.product.groupBy({
-    by: ["category"],
+export async function slugExists(slug: string, existingProductId?: number) {
+  const product = await client.db.product.findFirst({
+    where: {
+      slug, // Check if slug exists, excluding the current product if editing
+      ...(existingProductId ? { id: { not: existingProductId } } : {}),
+    },
+    select: { id: true },
   });
 
-  return categories.map((c) => c.category);
+  return !!product; // Return true if a product with the slug exists, false otherwise
 }
 
 export async function createProduct(data: {
@@ -80,6 +88,17 @@ export async function updateProduct(
 ) {
   const updated = await client.db.product.update({ where: { id }, data: data as any });
   return updated;
+}
+
+export async function getProductById(id: number) {
+  const product = await client.db.product.findUnique({ where: { id } });
+  if (!product) {
+    return null;
+  }
+  return {
+    ...product,
+    price: product.price.toNumber(),
+  };
 }
 
 export async function deleteProduct(id: number) {

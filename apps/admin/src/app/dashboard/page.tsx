@@ -3,6 +3,9 @@ import { redirect } from "next/navigation";
 import { getProductsForAdmin } from "@repo/db/products";
 import { listOrders } from "@repo/db/orders";
 import Dashboard from "../../components/dashboard/Dashboard";
+import { getUserRoleFromSession } from "@repo/db/users";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 import OrdersPanel from "../../components/dashboard/OrdersPanel";
 import ProductsPanel from "../../components/dashboard/ProductsPanel";
 
@@ -15,6 +18,17 @@ type DashboardProps = {
 };
 
 export default async function DashboarPage({ searchParams }: DashboardProps) {
+
+  const session = await getServerSession(authOptions);
+  
+  if (!session) {
+    redirect("/login");
+  } else {
+    const userRole = await getUserRoleFromSession(session);
+    if (userRole !== "ADMIN") {
+      redirect("/login");
+    }
+  }
 
   const params = await searchParams;
   //take the first value if it's an array, otherwise take the string value
@@ -43,7 +57,7 @@ export default async function DashboarPage({ searchParams }: DashboardProps) {
     >
 
       {activeTab === "products" ? (
-        <h1>Products</h1>
+        <ProductsPanel products={products} />
       ) : (
         <h1>Orders</h1>
       )}
