@@ -1,14 +1,23 @@
-import { isLoggedIn } from "../utils/auth";
-import SignIn from "../components/SignIn";
+import Link from "next/link";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { getUserRoleFromSession } from "@repo/db/users";
+import { getProductsForAdmin } from "@repo/db/products";
+import { listOrders } from "@repo/db/orders";
+import Dashboard from "../components/dashboard/Dashboard";
 
 export default async function Home() {
-  // use the is logged in function to check if user is authorised
-  // we will use the cookie based approach
-  const loggedIn = await isLoggedIn();
+  const session = await getServerSession(authOptions);
 
-  if (!loggedIn) {
-    return <SignIn />;
+  if (!session) {
+    redirect("/login");
+  } else {
+    const userRole = await getUserRoleFromSession(session);
+    if (userRole !== "ADMIN") {
+      redirect("/login");
+    }
   }
 
-  return <h1>Hello</h1>;
+  redirect("/dashboard");
 }

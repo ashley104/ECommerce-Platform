@@ -2,8 +2,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getProductsForAdmin } from "@repo/db/products";
 import { listOrders } from "@repo/db/orders";
-
-import { isLoggedIn } from "../../utils/auth";
 import Dashboard from "../../components/dashboard/Dashboard";
 import OrdersPanel from "../../components/dashboard/OrdersPanel";
 import ProductsPanel from "../../components/dashboard/ProductsPanel";
@@ -17,11 +15,6 @@ type DashboardProps = {
 };
 
 export default async function DashboarPage({ searchParams }: DashboardProps) {
-  const loggedIn = await isLoggedIn();
-
-  if (!loggedIn) {
-    redirect("/");
-  }
 
   const params = await searchParams;
   //take the first value if it's an array, otherwise take the string value
