@@ -1,16 +1,17 @@
-import type { Post } from "@repo/db/data";
-import BlogList from "./Blog/List";
+import { getCategories, getProductsForWeb } from "@repo/db/products";
+import ProductList from "./Product/ProductList";
 
-export function Main({
-  posts,
+export async function Main({
   className,
-}: {
-  posts: Post[];
+} : {
   className?: string;
 }) {
+  const products = await getProductsForWeb();
+  const categories = await getCategories();
+  
   return (
     <main className={className}>
-      <BlogList posts={posts} />
+      <ProductList products={products} categories={categories} />;
     </main>
   );
 }

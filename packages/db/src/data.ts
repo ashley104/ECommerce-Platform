@@ -1,3 +1,98 @@
+export type Product = {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  category: string;
+  stock: number;
+  active?: boolean;
+}
+
+export const initialProducts: Product[] = [
+  {
+    id: 1,
+    name: 'Wireless Headphones',
+    slug: 'wireless-headphones',
+    description: 'Premium noise-cancelling wireless headphones with 30-hour battery life',
+    price: 299.99,
+    imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400',
+    category: 'Electronics',
+    stock: 25
+  },
+  {
+    id: 2,
+    name: 'Smart Watch',
+    slug: 'smart-watch',
+    description: 'Fitness tracker with heart rate monitor and GPS',
+    price: 399.99,
+    imageUrl: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
+    category: 'Electronics',
+    stock: 15
+  },
+  {
+    id: 3,
+    name: 'Cotton T-Shirt',
+    slug: 'cotton-t-shirt',
+    description: 'Comfortable 100% organic cotton t-shirt',
+    price: 29.99,
+    imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400',
+    category: 'Clothing',
+    stock: 50
+  },
+  {
+    id: 4,
+    name: 'Denim Jeans',
+    slug: 'denim-jeans',
+    description: 'Classic fit denim jeans with stretch fabric',
+    price: 79.99,
+    imageUrl: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400',
+    category: 'Clothing',
+    stock: 30
+  },
+  {
+    id: 5,
+    name: 'Coffee Maker',
+    slug: 'coffee-maker',
+    description: 'Programmable coffee maker with thermal carafe',
+    price: 89.99,
+    imageUrl: 'https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?w=400',
+    category: 'Home',
+    stock: 20
+  },
+  {
+    id: 6,
+    name: 'Yoga Mat',
+    slug: 'yoga-mat',
+    description: 'Non-slip exercise mat with carrying strap',
+    price: 39.99,
+    imageUrl: 'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=400',
+    category: 'Sports',
+    stock: 40
+  },
+  {
+    id: 7,
+    name: 'Laptop Stand',
+    slug: 'laptop-stand',
+    description: 'Adjustable aluminum laptop stand for ergonomic working',
+    price: 49.99,
+    imageUrl: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400',
+    category: 'Electronics',
+    stock: 35
+  },
+  {
+    id: 8,
+    name: 'Running Shoes',
+    slug: 'running-shoes',
+    description: 'Lightweight running shoes with cushioned sole',
+    price: 129.99,
+    imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400',
+    category: 'Sports',
+    stock: 22
+  }
+];
+
 export type Post = {
   id: number;
   urlId: string;

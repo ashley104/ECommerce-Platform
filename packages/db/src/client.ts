@@ -6,20 +6,23 @@ declare global {
 }
 
 export const createClient = () => {
-  if (global.prisma) {
-    return global.prisma;
+  if (globalThis.prisma) {
+    return globalThis.prisma;
   }
 
   const URL = env.DATABASE_URL;
+
+  if (!URL) {
+    throw new Error("DATABASE_URL is not set in environment");
+  }
 
   const prisma = new PrismaClient({
     datasourceUrl: URL,
   });
 
   console.log("Connected to database");
-  console.log(URL);
 
-  global.prisma = prisma;
+  globalThis.prisma = prisma;
   return prisma;
 };
 

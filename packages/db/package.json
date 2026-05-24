@@ -34,6 +34,15 @@
       "types": "./src/posts.ts",
       "default": "./dist/posts.js"
     }
+    ,
+    "./products": {
+      "types": "./src/products.ts",
+      "default": "./dist/products.js"
+    },
+    "./orders": {
+      "types": "./src/orders.ts",
+      "default": "./dist/orders.js"
+    }
   },
   "dependencies": {
     "@repo/env": "workspace:*"
