@@ -2,10 +2,11 @@ import { revalidatePath } from "next/cache";
 import { deleteProduct } from "@repo/db/products";
 
 export async function DELETE(
-  { params }: { params: { id: string } }
+  _request: Request,
+  { params }: { params: { id?: string } }
 ) {
   try {
-    const productId = Number(params.id);
+    const productId = Number(params?.id);
 
     if (!productId) {
       return Response.json(

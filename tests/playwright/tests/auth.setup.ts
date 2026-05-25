@@ -17,25 +17,25 @@ function ensureAuthDir() {
   }
 }
 
-// setup("authenticate admin", { tag: "@a2" }, async ({ playwright }) => {
-//   ensureAuthDir();
-//   console.log("Admin setup: Writing to", adminAuthFile, "CWD:", process.cwd());
+setup("authenticate admin", { tag: "@a2" }, async ({ playwright }) => {
+  ensureAuthDir();
+  console.log("Admin setup: Writing to", adminAuthFile, "CWD:", process.cwd());
 
-//   const apiContext = await playwright.request.newContext({
-//     baseURL: "http://localhost:3002",
-//   });
+  const apiContext = await playwright.request.newContext({
+    baseURL: "http://localhost:3002",
+  });
 
-//   await apiContext.post("/api/auth", {
-//     data: JSON.stringify({ password: "123" }),
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//   });
+  await apiContext.post("/api/auth", {
+    data: JSON.stringify({ password: "123" }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-//   await apiContext.storageState({ path: adminAuthFile });
-//   await apiContext.dispose();
-//   console.log("Admin setup: File exists?", fs.existsSync(adminAuthFile));
-// });
+  await apiContext.storageState({ path: adminAuthFile });
+  await apiContext.dispose();
+  console.log("Admin setup: File exists?", fs.existsSync(adminAuthFile));
+});
 
 setup("authenticate storefront", { tag: "@a1" }, async () => {
   ensureAuthDir();

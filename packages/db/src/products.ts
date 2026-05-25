@@ -1,5 +1,15 @@
 import { client } from "./client.js";
 
+async function syncProductIdSequence() {
+  await client.db.$executeRaw`
+    SELECT setval(
+      pg_get_serial_sequence('"Product"', 'id'),
+      COALESCE((SELECT MAX(id) FROM "Product"), 0) + 1,
+      false
+    )
+  `;
+}
+
 export async function getProductsForWeb() {
   const products = await client.db.product.findMany({
     where: { active: true },
@@ -66,6 +76,8 @@ export async function createProduct(data: {
   stock?: number;
   category: string;
 }) {
+  await syncProductIdSequence();
+
   const product = await client.db.product.create({
     data: {
       slug: data.slug,

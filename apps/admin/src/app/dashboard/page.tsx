@@ -42,7 +42,7 @@ export default async function DashboarPage({ searchParams }: DashboardProps) {
   return (
     <Dashboard
       products={products}
-      orders={orders}
+      totalOrders={orders.length}
       activeTab={activeTab}
       actions={
         activeTab === "products" ? (
@@ -59,7 +59,7 @@ export default async function DashboarPage({ searchParams }: DashboardProps) {
       {activeTab === "products" ? (
         <ProductsPanel products={products} />
       ) : (
-        <h1>Orders</h1>
+        <OrdersPanel />
       )}
     </Dashboard>
   );

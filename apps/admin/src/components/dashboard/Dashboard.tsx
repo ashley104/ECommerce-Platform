@@ -9,7 +9,7 @@ type DashboardProps = {
   actions?: ReactNode;
   children: ReactNode;
   products: any[];
-  orders: any[];
+  totalOrders: number;
 };
 
 const tabs = [
@@ -17,7 +17,7 @@ const tabs = [
   { href: "/dashboard?tab=orders", label: "Orders", value: "orders" },
 ] as const;
 
-export default function Dashboard({ activeTab, actions, children, products, orders }: DashboardProps) {
+export default function Dashboard({ activeTab, actions, children, products, totalOrders }: DashboardProps) {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
       <header className="border-b border-slate-200 bg-white">
@@ -37,7 +37,7 @@ export default function Dashboard({ activeTab, actions, children, products, orde
         <div className="mb-6 lg:flex-row lg:items-end lg:justify-between">
           <Overview
             totalProducts={products.length}
-            totalOrders={orders.length}
+            totalOrders={totalOrders}
           />
 
           <nav
