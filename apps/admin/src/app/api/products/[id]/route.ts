@@ -1,24 +1,23 @@
 import { revalidatePath } from "next/cache";
-import { client } from "@repo/db/client";
+import { deleteProduct } from "@repo/db/products";
 
 export async function DELETE(
-  request: Request,
-  // { params }: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
-    // const productId = Number(params.id);
+    const productId = Number(params.id);
 
-    // if (!productId) {
-    //   return Response.json(
-    //     { error: "Invalid product ID" },
-    //     { status: 400 }
-    //   );
-    // }
+    if (!productId) {
+      return Response.json(
+        { error: "Invalid product ID" },
+        { status: 400 }
+      );
+    }
 
-    // await client.db.product.delete({ where: { id: productId } });
+    await deleteProduct(productId);
 
-    // revalidatePath("/dashboard");
-    // revalidatePath("/");
+    revalidatePath("/dashboard");
+    revalidatePath("/");
 
     return Response.json(
       { success: true, message: "Product deleted successfully" },

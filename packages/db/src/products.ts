@@ -13,6 +13,14 @@ export async function getProductsForWeb() {
   return formattedProducts;
 }
 
+export async function getCategories() {
+  const categories = await client.db.product.groupBy({
+    by: ["category"],
+  });
+
+  return categories.map((c) => c.category);
+}
+
 export async function getProductsForAdmin() {
   const products = await client.db.product.findMany({
     select: {
