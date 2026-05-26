@@ -67,18 +67,35 @@ jobs:
           command: pnpm turbo test-1
           timeout: 10
           max-score: 1
-      - name: Report Storefront to SkillPies
+      ####################
+      # ADMIN TESTS
+      ####################
+      - name: Test Admin with Playwright
+        id: npm2
+        uses: WesternSydneyUniversity/autograding-command-grader@v2
+        continue-on-error: true
+        with:
+          working-directory: .
+          test-name: Part 1 - Client
+          command: pnpm turbo test-2
+          timeout: 10
+          max-score: 1
+      ####################
+      # REPORTING TO SKILLPIES
+      ####################
+      - name: Report Result to SkillPies
         if: always() # run on failed tests as well
         continue-on-error: true
         uses: tomitrescak/skillpies-reporting@v1.0
         with:
           courseId: ${{env.COURSE_ID}}
           sectionId: major-assignment-in-ci-cd-and-devops
-          testResult: ${{steps.npm1.outputs.result}}
+          testResult: ${{steps.npm1.outputs.result}} #pass when both tests pass, fail otherwise
 
       - name: Autograding Reporter
         uses: education/autograding-grading-reporter@v1
         env:
           NPM1_RESULTS: "${{steps.npm1.outputs.result}}"
+          NPM2_RESULTS: "${{steps.npm2.outputs.result}}"
         with:
-          runners: npm1
+          runners: npm1, npm2

@@ -1,5 +1,6 @@
-import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
+"use client";
+
+import { History, ShoppingCart } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -19,9 +20,16 @@ export default function HeaderButtons() {
 
   return (
     <div className="cursor-pointer inline-flex items-center gap-2">
+      <button
+        onClick={() => router.push("/purchase-history")}
+        className="cursor-pointer inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700"
+      >
+        <History className="h-5 w-5" />
+        History
+      </button>
       <button 
         onClick={handleCartClick}
-        className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-blue-700">
+        className="cursor-pointer inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-blue-700">
         <ShoppingCart className="w-5 h-5"/>
         {loadCart ? "Loading..." : "Cart"}
         <span className="rounded bg-blue-700 px-2 py-0.5 text-xs text-white">{itemCount}</span>

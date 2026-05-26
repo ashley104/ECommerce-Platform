@@ -8,10 +8,16 @@ import { expect, test, type Page } from "./fixtures";
 async function addFirstAvailableProduct(page: Page) {
   await page.goto("/");
 
-  const firstProduct = page.locator("article").first();
-  await firstProduct.getByRole("button", { name: /^Add$/ }).click();
+  await expect(page.getByRole("heading", { name: /products/i })).toBeVisible();
 
-  return firstProduct;
+  const productCard = page.locator("article").filter({
+    has: page.getByRole("heading", { name: /wireless headphones/i }),
+  }).first();
+
+  await expect(productCard).toBeVisible();
+  await productCard.getByRole("button", { name: /add|add more/i }).click();
+
+  return productCard;
 }
 
 test.describe("STOREFRONT - CART", () => {
@@ -19,7 +25,7 @@ test.describe("STOREFRONT - CART", () => {
     const productCard = await addFirstAvailableProduct(page);
 
     await expect(productCard.getByRole("button", { name: /added|add more/i })).toBeVisible();
-    await page.getByRole("link", { name: /cart/i }).click();
+    await page.getByRole("button", { name: /cart/i }).click();
 
     await expect(page).toHaveURL(/\/cart/);
     await expect(page.getByRole("heading", { name: /review your items/i })).toBeVisible();
@@ -34,7 +40,7 @@ test.describe("STOREFRONT - CART", () => {
 
   test("updates quantity and visible totals", { tag: "@a1" }, async ({ page }) => {
     await addFirstAvailableProduct(page);
-    await page.getByRole("link", { name: /cart/i }).click();
+    await page.getByRole("button", { name: /cart/i }).click();
 
     const cartItem = page.locator("article").first();
     const quantity = cartItem.locator("span").filter({ hasText: /^\d+$/ }).first();
@@ -53,7 +59,7 @@ test.describe("STOREFRONT - CART", () => {
 
   test("removes an item from the cart", { tag: "@a1" }, async ({ page }) => {
     await addFirstAvailableProduct(page);
-    await page.getByRole("link", { name: /cart/i }).click();
+    await page.getByRole("button", { name: /cart/i }).click();
 
     await page.getByRole("button", { name: /remove/i }).first().click();
 

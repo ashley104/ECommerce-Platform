@@ -7,16 +7,21 @@ import { expect, test, type Page } from "./fixtures";
 
 async function addFirstAvailableProduct(page: Page) {
   await page.goto("/");
+  await expect(page.getByRole("heading", { name: /products/i })).toBeVisible();
 
-  const firstProduct = page.locator("article").first();
-  await firstProduct.getByRole("button", { name: /^Add$/ }).click();
-  return firstProduct;
+  const productCard = page.locator("article").filter({
+    has: page.getByRole("heading", { name: /wireless headphones/i }),
+  }).first();
+
+  await expect(productCard).toBeVisible();
+  await productCard.getByRole("button", { name: /add|add more/i }).click();
+  return productCard;
 }
 
 test.describe("STOREFRONT - CHECKOUT", () => {
   test("completes checkout and shows success state", { tag: "@a1" }, async ({ page }) => {
     await addFirstAvailableProduct(page);
-    await page.getByRole("link", { name: /cart/i }).click();
+    await page.getByRole("button", { name: /cart/i }).click();
 
     await page.route("**/api/checkout", async (route) => {
       await route.fulfill({

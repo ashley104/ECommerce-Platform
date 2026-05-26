@@ -1,14 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ShoppingCart, Search, Filter } from "lucide-react";
+import { Search, Filter } from "lucide-react";
 
 import { useCart } from "./CartContext";
 import ProductCard from "./ProductCard";
+import HeaderButtons from "../HeaderButtons";
 import type { Product } from "@repo/db/data";
-import { signOut } from "next-auth/react";
 
 type StorefrontPageProps = {
   products: Product[];
@@ -18,7 +16,6 @@ type StorefrontPageProps = {
 export default function StorefrontPage({ products, categories }: StorefrontPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const router = useRouter();
   const { addProduct, getQuantity, itemCount } = useCart();
 
   const filteredProducts = useMemo(() => {
@@ -44,23 +41,7 @@ export default function StorefrontPage({ products, categories }: StorefrontPageP
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <span className="font-bold text-xl text-blue-800">B2C Store</span>
-
-            <div className="cursor-pointer inline-flex items-center gap-2">
-              <Link href="/cart" className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-blue-700">
-                <ShoppingCart className="w-5 h-5"/>
-                Cart
-                <span className="rounded bg-blue-700 px-2 py-0.5 text-xs text-white">{itemCount}</span>
-              </Link>
-              <button
-                onClick={async () => {
-                  await signOut({ redirect: false });
-                  router.push("/login");
-                }}
-                className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-neutral-700 px-3 py-2 text-sm font-semibold text-neutral-50 cursor-pointer"
-              >
-                Logout
-              </button>
-            </div>
+            <HeaderButtons />
           </div>
         </div>
       </header>

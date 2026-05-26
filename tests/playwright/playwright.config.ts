@@ -17,6 +17,9 @@ import fs from "fs";
 
 // Define the directory path
 const authDir = path.resolve(".auth");
+const adminAuthFile = path.join(authDir, "admin.json");
+const storefrontAuthFile = path.join(authDir, "storefront.json");
+const hasAuthState = fs.existsSync(adminAuthFile) && fs.existsSync(storefrontAuthFile);
 
 // Create .auth directory if it doesn't exist
 if (!fs.existsSync(authDir)) {
@@ -68,7 +71,7 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         baseURL: "http://localhost:3002",
       },
-      // dependencies: process.env.CI ? ["setup"] : [],
+      dependencies: hasAuthState ? [] : ["setup"],
     },
     {
       name: "chromium",
@@ -77,7 +80,7 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         baseURL: "http://localhost:3001",
       },
-      // dependencies: process.env.CI ? ["setup"] : [],
+      dependencies: hasAuthState ? [] : ["setup"],
     },
 
     // {

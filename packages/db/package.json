@@ -42,6 +42,10 @@
     "./orders": {
       "types": "./src/orders.ts",
       "default": "./dist/orders.js"
+    },
+    "./users": {
+      "types": "./src/users.ts",
+      "default": "./dist/users.js"
     }
   },
   "dependencies": {

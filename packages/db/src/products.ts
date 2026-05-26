@@ -1,5 +1,15 @@
 import { client } from "./client.js";
 
+async function syncProductIdSequence() {
+  await client.db.$executeRaw`
+    SELECT setval(
+      pg_get_serial_sequence('"Product"', 'id'),
+      COALESCE((SELECT MAX(id) FROM "Product"), 0) + 1,
+      false
+    )
+  `;
+}
+
 export async function getProductsForWeb() {
   const products = await client.db.product.findMany({
     where: { active: true },
@@ -11,6 +21,14 @@ export async function getProductsForWeb() {
   }));
 
   return formattedProducts;
+}
+
+export async function getCategories() {
+  const categories = await client.db.product.groupBy({
+    by: ["category"],
+  });
+
+  return categories.map((c) => c.category);
 }
 
 export async function getProductsForAdmin() {
@@ -29,16 +47,24 @@ export async function getProductsForAdmin() {
     },
     orderBy: { createdAt: "desc" },
   });
+  const formattedProducts = products.map((p) => ({
+    ...p,
+    price: p.price.toNumber(),
+  }));
 
-  return products;
+  return formattedProducts;
 }
 
-export async function getCategories() {
-  const categories = await client.db.product.groupBy({
-    by: ["category"],
+export async function slugExists(slug: string, existingProductId?: number) {
+  const product = await client.db.product.findFirst({
+    where: {
+      slug, // Check if slug exists, excluding the current product if editing
+      ...(existingProductId ? { id: { not: existingProductId } } : {}),
+    },
+    select: { id: true },
   });
 
-  return categories.map((c) => c.category);
+  return !!product; // Return true if a product with the slug exists, false otherwise
 }
 
 export async function createProduct(data: {
@@ -50,6 +76,8 @@ export async function createProduct(data: {
   stock?: number;
   category: string;
 }) {
+  await syncProductIdSequence();
+
   const product = await client.db.product.create({
     data: {
       slug: data.slug,
@@ -80,6 +108,17 @@ export async function updateProduct(
 ) {
   const updated = await client.db.product.update({ where: { id }, data: data as any });
   return updated;
+}
+
+export async function getProductById(id: number) {
+  const product = await client.db.product.findUnique({ where: { id } });
+  if (!product) {
+    return null;
+  }
+  return {
+    ...product,
+    price: product.price.toNumber(),
+  };
 }
 
 export async function deleteProduct(id: number) {
