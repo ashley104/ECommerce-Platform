@@ -8,7 +8,7 @@ import path from "path";
 import { client } from "@repo/db/client";
 
 const authDir = path.resolve(".auth");
-const adminAuthFile = path.join(authDir, "user.json");
+const adminAuthFile = path.join(authDir, "admin.json");
 const storefrontAuthFile = path.join(authDir, "storefront.json");
 
 function ensureAuthDir() {
@@ -17,24 +17,59 @@ function ensureAuthDir() {
   }
 }
 
-setup("authenticate admin", { tag: "@a2" }, async ({ playwright }) => {
+setup("authenticate admin", { tag: "@a2" }, async () => {
   ensureAuthDir();
-  console.log("Admin setup: Writing to", adminAuthFile, "CWD:", process.cwd());
 
-  const apiContext = await playwright.request.newContext({
-    baseURL: "http://localhost:3002",
-  });
+  const secret = process.env.NEXTAUTH_SECRET;
+  if (!secret) {
+    throw new Error("NEXTAUTH_SECRET is required to create the admin session");
+  }
 
-  await apiContext.post("/api/auth", {
-    data: JSON.stringify({ password: "123" }),
-    headers: {
-      "Content-Type": "application/json",
+  const email = "admin.tester@example.com";
+  const name = "Admin Tester";
+
+  await client.db.user.upsert({
+    where: { email },
+    update: { name, role: "ADMIN" },
+    create: {
+      email,
+      name,
+      role: "ADMIN",
+      emailVerified: new Date(),
     },
   });
 
-  await apiContext.storageState({ path: adminAuthFile });
-  await apiContext.dispose();
-  console.log("Admin setup: File exists?", fs.existsSync(adminAuthFile));
+  const token = await encode({
+    secret,
+    token: {
+      name,
+      email,
+      sub: email,
+    },
+  });
+
+  fs.writeFileSync(
+    adminAuthFile,
+    JSON.stringify(
+      {
+        cookies: [
+          {
+            name: "next-auth.session-token",
+            value: token,
+            domain: "localhost",
+            path: "/",
+            expires: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+            httpOnly: true,
+            secure: false,
+            sameSite: "Lax",
+          },
+        ],
+        origins: [],
+      },
+      null,
+      2,
+    ),
+  );
 });
 
 setup("authenticate storefront", { tag: "@a1" }, async () => {
