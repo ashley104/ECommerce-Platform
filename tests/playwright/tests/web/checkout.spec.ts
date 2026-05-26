@@ -7,10 +7,15 @@ import { expect, test, type Page } from "./fixtures";
 
 async function addFirstAvailableProduct(page: Page) {
   await page.goto("/");
+  await expect(page.getByRole("heading", { name: /products/i })).toBeVisible();
 
-  const firstProduct = page.locator("article").first();
-  await firstProduct.getByRole("button", { name: /add|add more/i }).click();
-  return firstProduct;
+  const productCard = page.locator("article").filter({
+    has: page.getByRole("heading", { name: /wireless headphones/i }),
+  }).first();
+
+  await expect(productCard).toBeVisible();
+  await productCard.getByRole("button", { name: /add|add more/i }).click();
+  return productCard;
 }
 
 test.describe("STOREFRONT - CHECKOUT", () => {

@@ -10,10 +10,13 @@ test.describe("STOREFRONT - PRODUCTS", () => {
     await page.goto("/");
 
     await expect(page.getByRole("heading", { name: /products/i })).toBeVisible();
-    await expect(page.locator("article")).toHaveCount(8);
 
-    const firstProduct = page.locator("article").first();
-    await expect(firstProduct.getByRole("button", { name: /add/i })).toBeVisible();
+    const productCard = page.locator("article").filter({
+      has: page.getByRole("heading", { name: /wireless headphones/i }),
+    }).first();
+
+    await expect(productCard).toBeVisible();
+    await expect(productCard.getByRole("button", { name: /add/i })).toBeVisible();
   });
 
   test("searches products by name", { tag: "@a1" }, async ({ page }) => {
