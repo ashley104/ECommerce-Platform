@@ -9,14 +9,14 @@ async function addFirstAvailableProduct(page: Page) {
   await page.goto("/");
 
   const firstProduct = page.locator("article").first();
-  await firstProduct.getByRole("button", { name: /^Add$/ }).click();
+  await firstProduct.getByRole("button", { name: /add|add more/i }).click();
   return firstProduct;
 }
 
 test.describe("STOREFRONT - CHECKOUT", () => {
   test("completes checkout and shows success state", { tag: "@a1" }, async ({ page }) => {
     await addFirstAvailableProduct(page);
-    await page.getByRole("link", { name: /cart/i }).click();
+    await page.getByRole("button", { name: /cart/i }).click();
 
     await page.route("**/api/checkout", async (route) => {
       await route.fulfill({
