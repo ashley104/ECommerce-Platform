@@ -76,7 +76,7 @@ jobs:
         continue-on-error: true
         with:
           working-directory: .
-          test-name: Part 1 - Client
+          test-name: Part 2 - Admin
           command: pnpm turbo test-2
           timeout: 10
           max-score: 1
@@ -90,7 +90,7 @@ jobs:
         with:
           courseId: ${{env.COURSE_ID}}
           sectionId: major-assignment-in-ci-cd-and-devops
-          testResult: ${{steps.npm1.outputs.result}} #pass when both tests pass, fail otherwise
+          testResult: ${{steps.npm1.outputs.result}}
 
       - name: Autograding Reporter
         uses: education/autograding-grading-reporter@v1
