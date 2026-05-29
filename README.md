@@ -1,87 +1,56 @@
-# Checkout webs at:
-- Storefront: https://e-commerce-platform-storefront.vercel.app
-- Admin: https://e-commerce-platform-admin.vercel.app
+# Web App
 
-# ECommerce Platform
+Next.js storefront for browsing products, signing in with GitHub, and checking out orders.
 
-## Project Overview
+## Local Development
 
-This repository is a monorepo for a full-stack Next.js platform with a shared database layer, separate admin and client apps, and common packages for UI, utilities, configuration, and environment handling.
+- App URL: `http://localhost:3001`
+- API reference: [docs/api.md](../../docs/api.md)
+- Shared data layer: `packages/db`
 
-The project is set up for local development with `pnpm` and Turborepo, and it includes a dedicated API reference in [docs/api.md](docs/api.md).
+## API Routes
 
-## Monorepo Structure
+- `/api/auth/[...nextauth]` for GitHub-based sign-in and sign-out
+- `/api/checkout` for Stripe checkout session creation
+- `/api/orders` for creating paid orders after checkout
 
-- `apps/admin` - Admin app for managing content and internal workflows
-- `apps/web` - Client-facing storefront app
-- `packages/db` - Shared Prisma data layer
-- `packages/ui` - Shared UI components
-- `packages/utils` - Shared utility helpers
-- `packages/eslint-config`, `packages/tailwind-config`, `packages/typescript-config` - Shared workspace configuration packages
-- `tests/playwright` - End-to-end test workspace
-- `tests/storybook` - Storybook workspace for isolated UI development
+## Client-specific features
 
-## Tech Stack
+- **Product catalog:** Browse products with categories and search, powered by `packages/db` queries.
+- **Checkout & payments:** Creates Stripe Checkout sessions via `/api/checkout` and records paid orders via `/api/orders`.
+- **Authentication:**  GitHub sign-in (NextAuth) for user accounts and order association.
 
-- Next.js
-- React
-- TypeScript
-- Turborepo
-- pnpm
-- Prisma
-- NextAuth
-- Tailwind CSS
-- Stripe
-- Vitest
-- Playwright
+## Client environment variables
 
-## Global Setup
+Set these for the web app (e.g., in `apps/web/.env` or your hosting provider):
 
-1. Install dependencies from the repository root with `pnpm install`.
-2. Copy the required `.env.example` files where they exist and create matching `.env` files.
-3. Start both apps and shared workspaces with `pnpm dev`.
-4. If you plan to run the E2E tests locally, install the browser binaries with `pnpx playwright install` in the Playwright test workspace.
+- `DATABASE_URL` — shared database connection used by `packages/db`.
+- `STRIPE_API_KEY` — Secret Stripe API key for creating Checkout sessions.
+- `NEXTAUTH_SECRET` — NextAuth secret for session signing.
+- `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` — GitHub OAuth app credentials
 
-## Apps Overview
+## Run & build (web)
 
-### Admin
+From the repo root:
 
-The admin app runs on `http://localhost:3002` in development. It uses GitHub sign-in through NextAuth and is responsible for admin-only management flows.
+```bash
+pnpm install
+pnpm dev
+```
 
-### Client
+Run or build the web app only:
 
-The client app runs on `http://localhost:3001` in development. It is the storefront-facing app for browsing data, signing in, and checkout flows.
+```bash
+pnpm --filter @repo/web dev     # run web locally on :3001
+pnpm --filter @repo/web build   # build web for production]
+```
 
-## Shared Environment Requirements
+## Run tests
 
-### Shared database
+`turbo test-1`
 
-- `DATABASE_URL` is required by `packages/db`.
+## Deployment notes (web)
 
-### Admin app
-
-- `PASSWORD`
-- `JWT_SECRET`
-- `GITHUB_CLIENT_ID`
-- `GITHUB_CLIENT_SECRET`
-- `NEXTAUTH_URL=http://localhost:3002`
-- `NEXTAUTH_SECRET`
-
-### Client app
-
-- `GITHUB_CLIENT_ID`
-- `GITHUB_CLIENT_SECRET`
-- `NEXTAUTH_URL=http://localhost:3001`
-- `NEXTAUTH_SECRET`
-- `STRIPE_API_KEY`
-
-## Deployment Overview
-
-Deploy the admin and client apps separately, then point both at the same production database and shared auth provider settings.
-
-- Provision a hosted database and set `DATABASE_URL` in the deployment environment.
-- Configure GitHub OAuth for both apps with their production callback URLs.
-- Set the correct `NEXTAUTH_URL` and `NEXTAUTH_SECRET` values for each app.
-- Set `STRIPE_API_KEY` for the client app if checkout is enabled in production.
-- Run Prisma migrations before or during release so the database schema matches the deployed code.
-- Keep the admin and client deployments on their own hostnames or routes so their auth callbacks stay isolated.
+- Stripe: set `STRIPE_API_KEY` in production
+- Database & migrations: run Prisma migrations in CI before deploying; ensure `DATABASE_URL` points to production DB.
+- NextAuth / OAuth: configure GitHub OAuth app with the web app's production callback URL, and set `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` plus `NEXTAUTH_SECRET`.
