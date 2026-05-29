@@ -1,6 +1,6 @@
 # Checkout webs at:
 - Storefront: https://e-commerce-platform-storefront.vercel.app
-- Admin: https://e-commerce-platform-admin.vercel.app
+- Admin: https://e-commerce-platform-admin-three.vercel.app
 
 # ECommerce Platform
 
